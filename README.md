@@ -33,10 +33,12 @@
 .
 ├── README.md
 ├── RULES.md
-├── CONTRIBUTING.md
-├── weeks/
-│   ├── week01/
-│     ├── summary.md      # 핵심 내용 요약 (개념 중심)
-│     ├── questions.md    # 이해 안 된 점 / 토론 주제
-│     └── insights.md     # 실무 적용 인사이트
+├── LIST.md
+└── weeks/
+    ├── week01/
+    │   ├── summary.md
+    │   ├── questions.md
+    │   └── insights.md
+    ├── week02/
+    └── ...
 ```
