@@ -1,2 +1,5 @@
-- Fiber 구조가 없었다면 어떤 문제가 발생했을까?
-- setState는 왜 비동기적으로 동작할까?
+- lazy loading을 적용한다고 해서 캐싱이 저절로 활성화 되는건 아닌데 048장에서 설명이 미흡하지 않나요?
+  - HTTP Cache
+  - Service Worker Cache
+  - Application Cache
+  - CDN Cache
