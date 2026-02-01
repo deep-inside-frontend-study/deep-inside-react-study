@@ -207,10 +207,3 @@ return (
 
 ### JSXChildren
 - 위에 것들을 다 합쳐서, JSX의 children을 가리키는 표현
-
-### dangerouslySetInnerHtml 의 역할과 위험성
-- **역할**
-  - 문자열을 그대로 HTML로 해석해서 DOMdp Rhwsms rlsmd
-- 유저 입력을 해당 방식으로 렌더링하면 XSS 공격에 취약해질 수 있음
-  - **왜?** : 유저다 악성 스크립트/이벤트를 심어서 다른 사람의 브라우저에서 실행시키는 공격이 가능해짐
-
