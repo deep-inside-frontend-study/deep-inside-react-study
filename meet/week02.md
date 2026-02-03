@@ -1,0 +1,4 @@
+- https://github.com/deep-inside-frontend-study/deep-inside-react-study - 조직레포
+- 장소: 성수지앵 2층 회의실
+- 과제: 챕터 7~9 진행
+- 다음주 승연님 커피사드리기 (승호)
