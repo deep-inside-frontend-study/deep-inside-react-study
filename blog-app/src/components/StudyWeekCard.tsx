@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { StudyWeek } from "@/types";
-import { MemberAvatar } from "./MemberAvatar";
+import { MemberAvatar } from "@/components/member/MemberAvatar";
 
 function deriveCardData(week: StudyWeek) {
   const members = [
@@ -38,7 +38,8 @@ function Header({ weekNum, members }: { weekNum: number; members: string[] }) {
               key={name}
               memberId={name}
               size="lg"
-              className={`border-2 border-[#0a0e1a] ${i > 0 ? "-ml-2" : ""} z-[${10 - i}]`}
+              style={{ zIndex: 10 - i }}
+              className={`border-2 border-[#0a0e1a] ${i > 0 ? "-ml-2" : ""}`}
             />
           ))}
           {overflow > 0 && (
