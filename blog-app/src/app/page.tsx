@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { getAllSessions, StudySession } from "@/lib/getStudyData";
+import { getAllWeeks, WeekData } from "@/lib/getStudyData";
 
-// js-index-maps: Map으로 O(1) 조회
 const MEMBER_COLOR_MAP = new Map<string, string>([
   ["hyunwoo", "#6378ff"],
   ["jisoo", "#a78bfa"],
@@ -10,75 +9,55 @@ const MEMBER_COLOR_MAP = new Map<string, string>([
   ["hsy", "#fb7185"],
 ]);
 
-function SessionCard({ session }: { session: StudySession }) {
-  const { sessionNum, weeks } = session;
-
-  // 이 세션에 참여한 유니크 멤버 목록
-  const allMembers = [
-    ...new Set(weeks.flatMap((w) => w.members.map((m) => m.member))),
-  ];
-
-  const chapterNums = weeks.map((w) => w.week);
-  const chapterLabel =
-    chapterNums.length > 1
-      ? `${chapterNums[0]}~${chapterNums[chapterNums.length - 1]}장`
-      : `${chapterNums[0]}장`;
-
+function WeekCard({ week, index }: { week: WeekData; index: number }) {
   return (
-    <Link href={`/session/${sessionNum}`} className="no-underline h-full">
-      <div className="glass-card fade-in-up flex flex-col gap-4 p-6 h-full cursor-pointer">
+    <Link href={`/week/${week.slug}`} className="no-underline h-full">
+      <div
+        className="glass-card fade-in-up flex flex-col gap-4 p-6 h-full cursor-pointer"
+        style={{ animationDelay: `${index * 0.04}s` }}
+      >
         {/* Header */}
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-1">
-            <span className="badge badge-part2">{sessionNum}주차</span>
+            <span className="badge badge-part2">{week.week}주차</span>
             <span
               className="text-5xl font-black leading-none tabular-nums"
               style={{ color: "rgba(99,120,255,0.2)" }}
             >
-              {String(sessionNum).padStart(2, "0")}
+              {String(week.week).padStart(2, "0")}
             </span>
           </div>
 
           {/* Member avatars */}
-          {allMembers.length > 0 ? (
+          {week.members.length > 0 ? (
             <div className="flex items-center">
-              {allMembers.map((name, i) => (
+              {week.members.map((m, i) => (
                 <div
-                  key={name}
-                  title={name}
+                  key={m.member}
+                  title={m.member}
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-[#0a0e1a]"
                   style={{
-                    background: MEMBER_COLOR_MAP.get(name) ?? "#94a3b8",
+                    background: MEMBER_COLOR_MAP.get(m.member) ?? "#94a3b8",
                     marginLeft: i > 0 ? -8 : 0,
-                    zIndex: allMembers.length - i,
+                    zIndex: week.members.length - i,
                   }}
                 >
-                  {name.charAt(0).toUpperCase()}
+                  {m.member.charAt(0).toUpperCase()}
                 </div>
               ))}
             </div>
           ) : null}
         </div>
 
-        {/* Chapter list */}
-        <div className="flex flex-col gap-1.5">
-          {weeks.map((w) => (
-            <div
-              key={w.slug}
-              className="flex items-center gap-2 text-xs text-slate-400"
-            >
-              <span className="text-[#6378ff] font-mono shrink-0">
-                {w.week}장
-              </span>
-              <span className="truncate">{w.chapterTitle}</span>
-            </div>
-          ))}
-        </div>
+        {/* Chapter title (what this week covered) */}
+        <p className="text-[0.9rem] font-semibold text-slate-300 leading-relaxed">
+          {week.chapterTitle}
+        </p>
 
         {/* Footer */}
         <div className="mt-auto flex justify-between items-center">
           <span className="text-xs text-slate-600">
-            {chapterLabel} · {allMembers.length}명
+            {week.members.length}명 참여
           </span>
           <span className="text-xs text-[#6378ff]">보기 →</span>
         </div>
@@ -88,10 +67,9 @@ function SessionCard({ session }: { session: StudySession }) {
 }
 
 export default function HomePage() {
-  const sessions = getAllSessions();
-  const totalChapters = sessions.reduce((acc, s) => acc + s.weeks.length, 0);
-  const totalContributions = sessions.reduce(
-    (acc, s) => acc + s.weeks.reduce((a, w) => a + w.members.length, 0),
+  const weeks = getAllWeeks();
+  const totalContributions = weeks.reduce(
+    (acc, w) => acc + w.members.length,
     0,
   );
 
@@ -123,9 +101,8 @@ export default function HomePage() {
           {/* Stats */}
           <div className="flex gap-4 justify-center mt-7 flex-wrap">
             {[
-              { value: sessions.length, label: "주차", color: "#6378ff" },
-              { value: totalChapters, label: "챕터", color: "#a78bfa" },
-              { value: totalContributions, label: "기록", color: "#38bdf8" },
+              { value: weeks.length, label: "주차", color: "#6378ff" },
+              { value: totalContributions, label: "기록", color: "#a78bfa" },
             ].map(({ value, label, color }) => (
               <div
                 key={label}
@@ -142,11 +119,11 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Session Cards */}
+      {/* Week Cards */}
       <div className="max-w-5xl mx-auto px-6 py-10 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sessions.map((session) => (
-            <SessionCard key={session.sessionNum} session={session} />
+          {weeks.map((week, i) => (
+            <WeekCard key={week.slug} week={week} index={i} />
           ))}
         </div>
       </div>
