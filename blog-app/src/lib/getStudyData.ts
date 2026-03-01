@@ -7,11 +7,7 @@ import {
   type WeekData,
   type StudyWeek,
 } from "@/types";
-import { CHAPTER_MAP, PART_MAP } from "@/constants";
-
-export function getPart(week: number): string {
-  return PART_MAP[week as keyof typeof PART_MAP] ?? "";
-}
+import { CHAPTER_MAP } from "@/constants/study";
 
 const WEEKS_DIR = path.join(process.cwd(), "..", "weeks");
 

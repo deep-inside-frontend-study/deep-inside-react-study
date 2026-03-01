@@ -20,8 +20,3 @@ export interface StudyWeek {
   weekNum: number;
   chapters: WeekData[];
 }
-
-export interface StudySession {
-  sessionNum: number;
-  weeks: WeekData[];
-}
