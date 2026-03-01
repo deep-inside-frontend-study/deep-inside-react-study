@@ -1,4 +1,4 @@
-import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/lib/constants";
+import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/constants";
 import { Avatar } from "@/components/ui/Avatar";
 
 interface MemberAvatarProps {

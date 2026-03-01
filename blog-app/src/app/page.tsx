@@ -4,7 +4,7 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { StudyWeekCard } from "@/components/StudyWeekCard";
 import { StatCard } from "@/components/StatCard";
 
-import { REPO_URL } from "@/lib/constants";
+import { REPO_URL } from "@/constants";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import { MemberGithubChip } from "@/components/MemberGithubChip";
 

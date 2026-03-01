@@ -1,5 +1,5 @@
 import { MemberAvatar } from "./MemberAvatar";
-import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/lib/constants";
+import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/constants";
 
 interface MemberSelectChipProps {
   memberId: string;

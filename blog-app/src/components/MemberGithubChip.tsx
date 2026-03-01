@@ -5,7 +5,7 @@ import {
   DEFAULT_COLOR,
   MEMBER_GITHUB,
   MemberId,
-} from "@/lib/constants";
+} from "@/constants";
 
 interface MemberGithubChipProps {
   memberId: string;

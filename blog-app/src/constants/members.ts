@@ -65,6 +65,3 @@ export const MEMBER_GITHUB = {
   seungho: { displayName: "Seungho", github: "https://github.com/NoelYoon96" },
   hsy: { displayName: "HSY", github: "https://github.com/dev-redo" },
 } as const;
-
-export const REPO_URL =
-  "https://github.com/deep-inside-frontend-study/deep-inside-react-study";

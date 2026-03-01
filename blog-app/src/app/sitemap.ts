@@ -1,15 +1,14 @@
 import type { MetadataRoute } from "next";
 import { getStudyWeeks } from "@/lib/getStudyData";
+import { BASE_URL } from "@/constants";
 
 export const dynamic = "force-static";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const studyWeeks = getStudyWeeks();
 
   const weekPages = studyWeeks.map((w) => ({
-    url: `${BASE_URL}/week/${w.weekNum}/`,
+    url: `${BASE_URL}/weeks/${w.weekNum}/`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.8,
