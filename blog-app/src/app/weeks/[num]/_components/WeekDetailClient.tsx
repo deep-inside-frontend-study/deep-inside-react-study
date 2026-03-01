@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { StudyWeek, FileType, FILE_TYPES } from "@/types";
-import MarkdownRenderer from "@/components/MarkdownRenderer";
-import { MemberSelectChip } from "@/components/MemberSelectChip";
+import { MarkdownRenderer } from "@/components/ui/MarkdownRenderer";
+import { MemberSelectChip } from "@/components/member/MemberSelectChip";
 
 const FILE_META: Record<
   FileType,
@@ -29,11 +29,7 @@ const FILE_META: Record<
   },
 };
 
-export default function WeekDetailClient({
-  studyWeek,
-}: {
-  studyWeek: StudyWeek;
-}) {
+export function WeekDetailClient({ studyWeek }: { studyWeek: StudyWeek }) {
   const allMembers = Array.from(
     new Set(studyWeek.chapters.flatMap((w) => w.members.map((m) => m.member))),
   );
@@ -107,16 +103,17 @@ export default function WeekDetailClient({
 
       {/* ── 콘텐츠 ── */}
       <div className="glass-card p-8 min-h-[300px]">
-        {currentContent ? (
-          <MarkdownRenderer content={currentContent} />
-        ) : (
-          <div className="flex flex-col items-center justify-center text-slate-500 py-12 gap-3 h-full">
-            <span className="text-3xl">📝</span>
-            <p className="text-sm">
-              현재 선택된 항목에 작성된 내용이 없습니다.
-            </p>
-          </div>
-        )}
+        <MarkdownRenderer
+          content={currentContent}
+          emptyState={
+            <div className="flex flex-col items-center justify-center text-slate-500 py-12 gap-3 h-full">
+              <span className="text-3xl">📝</span>
+              <p className="text-sm">
+                현재 선택된 항목에 작성된 내용이 없습니다.
+              </p>
+            </div>
+          }
+        />
       </div>
     </div>
   );

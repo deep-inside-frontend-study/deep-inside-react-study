@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getStudyWeeks, getStudyWeekData } from "@/lib/getStudyData";
 import { getWeekNavigation } from "./_lib/getWeekNavigation";
-import WeekDetailClient from "@/components/WeekDetailClient";
+import { WeekDetailClient } from "./_components/WeekDetailClient";
 import { Header } from "@/components/ui/Header";
 
 export async function generateStaticParams() {
