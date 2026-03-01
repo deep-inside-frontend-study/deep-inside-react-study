@@ -1,5 +1,4 @@
-import { MemberChip } from "./MemberChip";
-import { Chip } from "@/components/ui/Chip";
+import { MemberAvatar } from "./MemberAvatar";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import {
   MEMBER_COLORS,
@@ -20,20 +19,17 @@ export function MemberGithubChip({ memberId }: MemberGithubChipProps) {
   const { displayName, github } = githubInfo;
 
   return (
-    <Chip
-      as="a"
+    <a
       href={github}
       target="_blank"
       rel="noopener noreferrer"
-      className={`border no-underline hover:scale-105 ${colors.bgSoft} ${colors.borderSoft}`}
-      startContent={
-        <MemberChip memberId={memberId} displayName={displayName} size="sm" />
-      }
-      endContent={<GitHubIcon className={`opacity-40 ${colors.text}`} />}
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full no-underline transition-all duration-200 hover:scale-105 border ${colors.bgSoft} ${colors.borderSoft}`}
     >
+      <MemberAvatar memberId={memberId} displayName={displayName} size="sm" />
       <span className={`text-xs font-medium ${colors.text}`}>
         {displayName}
       </span>
-    </Chip>
+      <GitHubIcon className={`opacity-40 ${colors.text}`} />
+    </a>
   );
 }

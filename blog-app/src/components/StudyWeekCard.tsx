@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { StudyWeek } from "@/lib/types";
-import { MemberChip } from "./MemberChip";
+import { MemberAvatar } from "./MemberAvatar";
 
 export function StudyWeekCard({
   studyWeek,
@@ -39,7 +39,7 @@ export function StudyWeekCard({
           {allMembers.length > 0 ? (
             <div className="flex items-center">
               {allMembers.slice(0, 5).map((name, i) => (
-                <MemberChip
+                <MemberAvatar
                   key={name}
                   memberId={name}
                   size="lg"

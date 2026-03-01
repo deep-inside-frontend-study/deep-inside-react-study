@@ -1,5 +1,4 @@
-import { MemberChip } from "./MemberChip";
-import { Chip } from "@/components/ui/Chip";
+import { MemberAvatar } from "./MemberAvatar";
 import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/lib/constants";
 
 interface MemberSelectChipProps {
@@ -16,17 +15,16 @@ export function MemberSelectChip({
   const colors = MEMBER_COLORS[memberId as MemberId] ?? DEFAULT_COLOR;
 
   return (
-    <Chip
-      as="button"
+    <button
       onClick={onClick}
-      className={`border-[1.5px] cursor-pointer px-4 py-2 text-sm ${
+      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer border-[1.5px] ${
         isActive
           ? `${colors.activeBg} ${colors.activeBorder} ${colors.activeText} font-bold`
           : "bg-transparent border-[rgba(99,120,255,0.15)] text-slate-400 font-normal"
       }`}
-      startContent={<MemberChip memberId={memberId} size="md" />}
     >
+      <MemberAvatar memberId={memberId} size="md" />
       {memberId}
-    </Chip>
+    </button>
   );
 }
