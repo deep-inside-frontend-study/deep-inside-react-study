@@ -1,11 +1,11 @@
 import { getStudyWeeks, getReadmeContent } from "@/lib/getStudyData";
 import { getStudyStats } from "./_lib/getStudyStats";
-import MarkdownRenderer from "@/components/MarkdownRenderer";
+import { MarkdownRenderer } from "@/components/ui/MarkdownRenderer";
 import { StudyWeekCard } from "@/components/StudyWeekCard";
-import { StatCard } from "@/components/StatCard";
+import { MetricCard } from "@/components/ui/MetricCard";
 import { REPO_URL } from "@/constants";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
-import { MemberGithubChip } from "@/components/MemberGithubChip";
+import { MemberGithubChip } from "@/components/member/MemberGithubChip";
 
 export default function HomePage() {
   const studyWeeks = getStudyWeeks();
@@ -50,10 +50,10 @@ export default function HomePage() {
 
           <div className="flex gap-4 justify-center mt-7 flex-wrap">
             {stats.map(({ value, label, textClass }) => (
-              <StatCard
+              <MetricCard
                 key={label}
-                top={<span className={textClass}>{value}</span>}
-                bottom={label}
+                value={<span className={textClass}>{value}</span>}
+                label={label}
               />
             ))}
           </div>
