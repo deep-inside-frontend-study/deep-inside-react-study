@@ -1,6 +1,8 @@
 import { getStudyWeeks, getReadmeContent } from "@/lib/getStudyData";
+import { getStudyStats } from "./_lib/getStudyStats";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { StudyWeekCard } from "@/components/StudyWeekCard";
+import { StatCard } from "@/components/StatCard";
 
 import { REPO_URL } from "@/lib/constants";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
@@ -9,14 +11,26 @@ import { MemberGithubChip } from "@/components/MemberGithubChip";
 export default function HomePage() {
   const studyWeeks = getStudyWeeks();
   const readmeContent = getReadmeContent();
-  const totalChapters = studyWeeks.reduce(
-    (acc, s) => acc + s.chapters.length,
-    0,
-  );
-  const totalContributions = studyWeeks.reduce(
-    (acc, s) => acc + s.chapters.reduce((a, w) => a + w.members.length, 0),
-    0,
-  );
+  const { totalWeeks, totalChapters, totalContributions } =
+    getStudyStats(studyWeeks);
+
+  const stats = [
+    {
+      value: totalWeeks,
+      label: "주차",
+      textClass: "text-[#6378ff]",
+    },
+    {
+      value: totalChapters,
+      label: "챕터",
+      textClass: "text-[#a78bfa]",
+    },
+    {
+      value: totalContributions,
+      label: "기록",
+      textClass: "text-[#38bdf8]",
+    },
+  ];
 
   return (
     <main className="min-h-screen">
@@ -48,34 +62,12 @@ export default function HomePage() {
           </p>
 
           <div className="flex gap-4 justify-center mt-7 flex-wrap">
-            {(
-              [
-                {
-                  value: studyWeeks.length,
-                  label: "주차",
-                  textClass: "text-[#6378ff]",
-                },
-                {
-                  value: totalChapters,
-                  label: "챕터",
-                  textClass: "text-[#a78bfa]",
-                },
-                {
-                  value: totalContributions,
-                  label: "기록",
-                  textClass: "text-[#38bdf8]",
-                },
-              ] as const
-            ).map(({ value, label, textClass }) => (
-              <div
+            {stats.map(({ value, label, textClass }) => (
+              <StatCard
                 key={label}
-                className="rounded-xl px-5 py-3 text-center border border-[rgba(99,120,255,0.15)] bg-[rgba(99,120,255,0.08)]"
-              >
-                <div className={`text-2xl font-black ${textClass}`}>
-                  {value}
-                </div>
-                <div className="text-xs text-slate-600">{label}</div>
-              </div>
+                top={<span className={textClass}>{value}</span>}
+                bottom={label}
+              />
             ))}
           </div>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getStudyWeeks, getStudyWeekData } from "@/lib/getStudyData";
+import { getWeekNavigation } from "./_lib/getWeekNavigation";
 import WeekDetailClient from "@/components/WeekDetailClient";
 import { Header } from "@/components/ui/Header";
 
@@ -40,12 +41,10 @@ export default async function StudyWeekPage({
   if (!weekData) notFound();
 
   const studyWeeks = getStudyWeeks();
-  const currentIdx = studyWeeks.findIndex(
-    (s) => s.weekNum === weekData.weekNum,
+  const { prevWeek, nextWeek } = getWeekNavigation(
+    studyWeeks,
+    weekData.weekNum,
   );
-  const prevWeek = currentIdx > 0 ? studyWeeks[currentIdx - 1] : null;
-  const nextWeek =
-    currentIdx < studyWeeks.length - 1 ? studyWeeks[currentIdx + 1] : null;
 
   const chapterNums = weekData.chapters.map((w) => w.week);
   const chapterRange =
@@ -55,7 +54,6 @@ export default async function StudyWeekPage({
 
   return (
     <main className="min-h-screen">
-      {/* Sticky nav */}
       {/* Sticky nav */}
       <Header
         className="sticky top-0 z-50 bg-[rgba(10,14,26,0.85)] backdrop-blur-md border-b border-[rgba(99,120,255,0.15)]"
