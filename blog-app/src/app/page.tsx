@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { getStudyWeeks, getReadmeContent } from "@/lib/getStudyData";
 import { getStudyStats } from "./_lib/getStudyStats";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
@@ -31,6 +32,33 @@ export default function HomePage() {
       textClass: "text-[#38bdf8]",
     },
   ];
+
+  const studyWeekCards = useMemo(() => {
+    return studyWeeks.map((week, i) => {
+      const allMembers = [
+        ...new Set(
+          week.chapters.flatMap((w) => w.members.map((m) => m.member)),
+        ),
+      ];
+
+      const chapNums = week.chapters.map((w) => w.week);
+      const chapterRange =
+        chapNums.length > 1
+          ? `${chapNums[0]}~${chapNums[chapNums.length - 1]}장`
+          : `${chapNums[0]}장`;
+
+      return (
+        <StudyWeekCard key={week.weekNum} weekNum={week.weekNum} index={i}>
+          <StudyWeekCard.Header weekNum={week.weekNum} members={allMembers} />
+          <StudyWeekCard.Body chapters={week.chapters} />
+          <StudyWeekCard.Footer
+            chapterRange={chapterRange}
+            memberCount={allMembers.length}
+          />
+        </StudyWeekCard>
+      );
+    });
+  }, [studyWeeks]);
 
   return (
     <main className="min-h-screen">
@@ -83,9 +111,7 @@ export default function HomePage() {
 
       <div className="max-w-5xl mx-auto px-6 py-10 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
-          {studyWeeks.map((week, i) => (
-            <StudyWeekCard key={week.weekNum} studyWeek={week} index={i} />
-          ))}
+          {studyWeekCards}
         </div>
 
         {/* README Section */}
