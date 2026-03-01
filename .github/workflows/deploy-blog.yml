@@ -1,0 +1,79 @@
+name: Deploy Blog to GitHub Pages
+
+on:
+  # main 브랜치에 직접 push할 때 (PR merge 포함)
+  push:
+    branches:
+      - main
+  # PR이 main으로 merge 완료될 때 명시적으로도 트리거
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+  # 수동 트리거
+  workflow_dispatch:
+
+# GitHub Pages에 배포할 권한 부여
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시에 하나의 배포만 실행
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Next.js Blog
+    # PR이 실제로 merge된 경우에만 실행 (단순 close나 직접 push는 모두 허용)
+    if: >
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: blog-app/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: blog-app
+        run: pnpm install --frozen-lockfile
+
+      - name: Build static site
+        working-directory: blog-app
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_BASE_URL: https://${{ github.repository_owner }}.github.io/deep-inside-react-study
+        run: pnpm build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: blog-app/out
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
