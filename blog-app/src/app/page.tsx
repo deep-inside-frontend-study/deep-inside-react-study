@@ -1,13 +1,48 @@
 import Link from "next/link";
-import { getStudyWeeks, StudyWeek } from "@/lib/getStudyData";
+import { getStudyWeeks, StudyWeek, getReadmeContent } from "@/lib/getStudyData";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
-const MEMBER_COLOR_MAP = new Map<string, string>([
-  ["hyunwoo", "#6378ff"],
-  ["jisoo", "#a78bfa"],
-  ["joohyung", "#38bdf8"],
-  ["seungho", "#34d399"],
-  ["hsy", "#fb7185"],
-]);
+const MEMBER_COLORS: Record<
+  string,
+  { base: string; bgSoft: string; borderSoft: string; text: string }
+> = {
+  hyunwoo: {
+    base: "bg-[#6378ff]",
+    bgSoft: "bg-[#6378ff]/10",
+    borderSoft: "border-[#6378ff]/25",
+    text: "text-[#6378ff]",
+  },
+  jisoo: {
+    base: "bg-[#a78bfa]",
+    bgSoft: "bg-[#a78bfa]/10",
+    borderSoft: "border-[#a78bfa]/25",
+    text: "text-[#a78bfa]",
+  },
+  joohyung: {
+    base: "bg-[#38bdf8]",
+    bgSoft: "bg-[#38bdf8]/10",
+    borderSoft: "border-[#38bdf8]/25",
+    text: "text-[#38bdf8]",
+  },
+  seungho: {
+    base: "bg-[#34d399]",
+    bgSoft: "bg-[#34d399]/10",
+    borderSoft: "border-[#34d399]/25",
+    text: "text-[#34d399]",
+  },
+  hsy: {
+    base: "bg-[#fb7185]",
+    bgSoft: "bg-[#fb7185]/10",
+    borderSoft: "border-[#fb7185]/25",
+    text: "text-[#fb7185]",
+  },
+};
+const DEFAULT_COLOR = {
+  base: "bg-slate-400",
+  bgSoft: "bg-slate-400/10",
+  borderSoft: "border-slate-400/25",
+  text: "text-slate-400",
+};
 
 const MEMBER_GITHUB: Record<string, { displayName: string; github: string }> = {
   hyunwoo: { displayName: "Hyunwoo", github: "https://github.com/gusdn3477" },
@@ -62,20 +97,22 @@ function StudyWeekCard({
 
           {allMembers.length > 0 ? (
             <div className="flex items-center">
-              {allMembers.slice(0, 5).map((name, i) => (
-                <div
-                  key={name}
-                  title={name}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-[#0a0e1a]"
-                  style={{
-                    background: MEMBER_COLOR_MAP.get(name) ?? "#94a3b8",
-                    marginLeft: i > 0 ? -8 : 0,
-                    zIndex: 10 - i,
-                  }}
-                >
-                  {name.charAt(0).toUpperCase()}
-                </div>
-              ))}
+              {allMembers.slice(0, 5).map((name, i) => {
+                const colors = MEMBER_COLORS[name] ?? DEFAULT_COLOR;
+                return (
+                  <div
+                    key={name}
+                    title={name}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-[#0a0e1a] ${colors.base}`}
+                    style={{
+                      marginLeft: i > 0 ? -8 : 0,
+                      zIndex: 10 - i,
+                    }}
+                  >
+                    {name.charAt(0).toUpperCase()}
+                  </div>
+                );
+              })}
             </div>
           ) : null}
         </div>
@@ -107,6 +144,7 @@ function StudyWeekCard({
 
 export default function HomePage() {
   const studyWeeks = getStudyWeeks();
+  const readmeContent = getReadmeContent();
   const totalChapters = studyWeeks.reduce(
     (acc, s) => acc + s.chapters.length,
     0,
@@ -148,16 +186,28 @@ export default function HomePage() {
           <div className="flex gap-4 justify-center mt-7 flex-wrap">
             {(
               [
-                { value: studyWeeks.length, label: "주차", color: "#6378ff" },
-                { value: totalChapters, label: "챕터", color: "#a78bfa" },
-                { value: totalContributions, label: "기록", color: "#38bdf8" },
+                {
+                  value: studyWeeks.length,
+                  label: "주차",
+                  textClass: "text-[#6378ff]",
+                },
+                {
+                  value: totalChapters,
+                  label: "챕터",
+                  textClass: "text-[#a78bfa]",
+                },
+                {
+                  value: totalContributions,
+                  label: "기록",
+                  textClass: "text-[#38bdf8]",
+                },
               ] as const
-            ).map(({ value, label, color }) => (
+            ).map(({ value, label, textClass }) => (
               <div
                 key={label}
                 className="rounded-xl px-5 py-3 text-center border border-[rgba(99,120,255,0.15)] bg-[rgba(99,120,255,0.08)]"
               >
-                <div className="text-2xl font-black" style={{ color }}>
+                <div className={`text-2xl font-black ${textClass}`}>
                   {value}
                 </div>
                 <div className="text-xs text-slate-600">{label}</div>
@@ -168,29 +218,24 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
             {Object.entries(MEMBER_GITHUB).map(
               ([key, { displayName, github }]) => {
-                const color = MEMBER_COLOR_MAP.get(key) ?? "#94a3b8";
+                const colors = MEMBER_COLORS[key] ?? DEFAULT_COLOR;
                 return (
                   <a
                     key={key}
                     href={github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full no-underline transition-all duration-200 hover:scale-105"
-                    style={{
-                      background: `${color}18`,
-                      border: `1px solid ${color}40`,
-                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full no-underline transition-all duration-200 hover:scale-105 border ${colors.bgSoft} ${colors.borderSoft}`}
                   >
                     <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-white shrink-0"
-                      style={{ background: color }}
+                      className={`w-5 h-5 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-white shrink-0 ${colors.base}`}
                     >
                       {displayName.charAt(0)}
                     </div>
-                    <span className="text-xs font-medium" style={{ color }}>
+                    <span className={`text-xs font-medium ${colors.text}`}>
                       {displayName}
                     </span>
-                    <span className="opacity-40" style={{ color }}>
+                    <span className={`opacity-40 ${colors.text}`}>
                       <GitHubIcon />
                     </span>
                   </a>
@@ -202,10 +247,21 @@ export default function HomePage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 py-10 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
           {studyWeeks.map((week, i) => (
             <StudyWeekCard key={week.weekNum} studyWeek={week} index={i} />
           ))}
+        </div>
+
+        {/* README Section */}
+        <div className="mt-16 fade-in-up" style={{ animationDelay: "0.5s" }}>
+          <div className="flex items-center gap-4 mb-8">
+            <h2 className="text-2xl font-bold">About Study</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-[rgba(99,120,255,0.2)] to-transparent" />
+          </div>
+          <div className="glass-card p-8 sm:p-12 overflow-hidden">
+            <MarkdownRenderer content={readmeContent} />
+          </div>
         </div>
       </div>
     </main>

@@ -10,19 +10,9 @@ interface MarkdownRendererProps {
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   if (!content || content.trim().length === 0) {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "3rem",
-          color: "var(--text-muted)",
-          textAlign: "center",
-          gap: "0.75rem",
-        }}
-      >
-        <span style={{ fontSize: "2.5rem" }}>📭</span>
-        <p style={{ fontSize: "0.9rem" }}>아직 작성된 내용이 없어요.</p>
+      <div className="flex flex-col items-center p-12 text-slate-500 text-center gap-3">
+        <span className="text-[2.5rem]">📭</span>
+        <p className="text-[0.9rem]">아직 작성된 내용이 없어요.</p>
       </div>
     );
   }
@@ -41,23 +31,9 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             );
             if (isBlock) {
               return (
-                <pre
-                  style={{
-                    background: "rgba(5,10,25,0.9)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "10px",
-                    padding: "1.25rem",
-                    overflowX: "auto",
-                    margin: "1rem 0",
-                  }}
-                >
+                <pre className="bg-[rgba(5,10,25,0.9)] border border-slate-800 rounded-[10px] p-5 overflow-x-auto my-4">
                   <code
-                    className={className}
-                    style={{
-                      fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.875rem",
-                      color: "#e2e8f0",
-                    }}
+                    className={`${className || ""} font-mono text-sm text-slate-200`}
                     {...props}
                   >
                     {children}
@@ -67,14 +43,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             }
             return (
               <code
-                style={{
-                  background: "rgba(99,120,255,0.12)",
-                  color: "#a78bfa",
-                  padding: "0.15rem 0.4rem",
-                  borderRadius: "4px",
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.85em",
-                }}
+                className="bg-[rgba(99,120,255,0.12)] text-violet-400 px-1.5 py-0.5 rounded font-mono text-[0.85em]"
                 {...props}
               >
                 {children}

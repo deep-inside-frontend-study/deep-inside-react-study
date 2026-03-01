@@ -28,13 +28,47 @@ const FILE_META: Record<
   },
 };
 
-const MEMBER_COLOR_MAP = new Map<string, string>([
-  ["hyunwoo", "#6378ff"],
-  ["jisoo", "#a78bfa"],
-  ["joohyung", "#38bdf8"],
-  ["seungho", "#34d399"],
-  ["hsy", "#fb7185"],
-]);
+const MEMBER_COLORS: Record<
+  string,
+  { base: string; activeBg: string; activeBorder: string; activeText: string }
+> = {
+  hyunwoo: {
+    base: "bg-[#6378ff]",
+    activeBg: "bg-[#6378ff]/20",
+    activeBorder: "border-[#6378ff]",
+    activeText: "text-[#6378ff]",
+  },
+  jisoo: {
+    base: "bg-[#a78bfa]",
+    activeBg: "bg-[#a78bfa]/20",
+    activeBorder: "border-[#a78bfa]",
+    activeText: "text-[#a78bfa]",
+  },
+  joohyung: {
+    base: "bg-[#38bdf8]",
+    activeBg: "bg-[#38bdf8]/20",
+    activeBorder: "border-[#38bdf8]",
+    activeText: "text-[#38bdf8]",
+  },
+  seungho: {
+    base: "bg-[#34d399]",
+    activeBg: "bg-[#34d399]/20",
+    activeBorder: "border-[#34d399]",
+    activeText: "text-[#34d399]",
+  },
+  hsy: {
+    base: "bg-[#fb7185]",
+    activeBg: "bg-[#fb7185]/20",
+    activeBorder: "border-[#fb7185]",
+    activeText: "text-[#fb7185]",
+  },
+};
+const DEFAULT_COLOR = {
+  base: "bg-slate-400",
+  activeBg: "bg-slate-400/20",
+  activeBorder: "border-slate-400",
+  activeText: "text-slate-400",
+};
 
 export default function WeekDetailClient({
   studyWeek,
@@ -77,23 +111,19 @@ export default function WeekDetailClient({
         {allMembers.length > 0 ? (
           allMembers.map((member) => {
             const isActive = member === activeMember;
-            const color = MEMBER_COLOR_MAP.get(member) ?? "#94a3b8";
+            const colors = MEMBER_COLORS[member] ?? DEFAULT_COLOR;
             return (
               <button
                 key={member}
                 onClick={() => setActiveMember(member)}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer"
-                style={{
-                  border: `1.5px solid ${isActive ? color : "rgba(99,120,255,0.15)"}`,
-                  background: isActive ? `${color}20` : "transparent",
-                  color: isActive ? color : "#94a3b8",
-                  fontWeight: isActive ? 700 : 400,
-                  fontFamily: "inherit",
-                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer border-[1.5px] ${
+                  isActive
+                    ? `${colors.activeBg} ${colors.activeBorder} ${colors.activeText} font-bold`
+                    : "bg-transparent border-[rgba(99,120,255,0.15)] text-slate-400 font-normal"
+                }`}
               >
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-[0.65rem] font-bold text-white shrink-0"
-                  style={{ background: color }}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-[0.65rem] font-bold text-white shrink-0 ${colors.base}`}
                 >
                   {member.charAt(0).toUpperCase()}
                 </div>
@@ -117,15 +147,11 @@ export default function WeekDetailClient({
             <button
               key={type}
               onClick={() => setActiveFileType(type)}
-              className={[
-                "flex items-center gap-1.5 px-4 py-2 rounded-[9px] text-sm transition-all duration-200 cursor-pointer border-0",
-                isActive ? meta.activeClass : "bg-transparent text-slate-600",
-                !hasContent ? "opacity-45" : "",
-              ].join(" ")}
-              style={{
-                fontFamily: "inherit",
-                fontWeight: isActive ? 700 : 400,
-              }}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-[9px] text-sm transition-all duration-200 cursor-pointer border-0 ${
+                isActive
+                  ? `${meta.activeClass} font-bold`
+                  : "bg-transparent text-slate-600 font-normal"
+              } ${!hasContent ? "opacity-45" : ""}`}
             >
               <span>{meta.icon}</span>
               <span>{meta.label}</span>

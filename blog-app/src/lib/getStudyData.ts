@@ -166,3 +166,8 @@ export const getStudyWeekData = cache(function getStudyWeekDataImpl(
 ): StudyWeek | null {
   return getStudyWeeks().find((s) => s.weekNum === weekNum) ?? null;
 });
+
+export const getReadmeContent = cache(function getReadmeContentImpl(): string {
+  const readmePath = path.join(process.cwd(), "..", "README.md");
+  return readFileSafe(readmePath);
+});
