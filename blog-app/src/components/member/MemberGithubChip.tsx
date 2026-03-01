@@ -1,7 +1,7 @@
 import { MemberAvatar } from "./MemberAvatar";
-import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import { getMemberColors } from "@/lib/getMemberColors";
-import { MEMBER_GITHUB, MemberId } from "@/constants";
+import { GitHubIcon } from "@/assets/icons/GitHubIcon";
+import { MEMBER_GITHUB, MemberId } from "@/constants/members";
 
 interface MemberGithubChipProps {
   memberId: string;

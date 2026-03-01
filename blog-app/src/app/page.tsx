@@ -3,7 +3,7 @@ import { getStudyStats } from "./_lib/getStudyStats";
 import { MarkdownRenderer } from "@/components/ui/MarkdownRenderer";
 import { StudyWeekCard } from "@/components/StudyWeekCard";
 import { MetricCard } from "@/components/ui/MetricCard";
-import { REPO_URL } from "@/constants";
+import { REPO_URL } from "@/constants/config";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import { MemberGithubChip } from "@/components/member/MemberGithubChip";
 

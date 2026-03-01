@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getStudyWeeks } from "@/lib/getStudyData";
-import { BASE_URL } from "@/constants";
+import { BASE_URL } from "@/constants/config";
 
 export const dynamic = "force-static";
 
