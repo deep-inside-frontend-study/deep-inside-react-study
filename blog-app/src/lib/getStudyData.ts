@@ -19,6 +19,11 @@ export interface WeekData {
   members: MemberPost[];
 }
 
+export interface StudySession {
+  sessionNum: number;
+  weeks: WeekData[];
+}
+
 /** 3개 챕터씩 묶은 주차 단위 스터디 세션 */
 export interface StudySession {
   sessionNum: number; // 1-based (1주차, 2주차...)
@@ -137,10 +142,6 @@ export function getWeekSlugs(): string[] {
     .sort();
 }
 
-/**
- * 챕터(week)를 3개씩 묶어 주차별 스터디 세션으로 반환
- * e.g. [week01,week02,week03] → session 1, [week04,...] → session 2
- */
 export const getAllSessions = cache(
   function getAllSessionsImpl(): StudySession[] {
     const weeks = getAllWeeks();
