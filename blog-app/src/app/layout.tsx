@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { JetBrains_Mono } from "next/font/google";
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 import { BASE_URL } from "@/constants/config";
-
-const pretendard = localFont({
-  src: "../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2",
-  display: "swap",
-  weight: "300 800",
-  variable: "--font-pretendard",
-});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -81,10 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      className={`${pretendard.variable} ${jetbrainsMono.variable}`}
-    >
+    <html lang="ko" className={jetbrainsMono.variable}>
       <head>
         {/* JSON-LD: WebSite 구조화 데이터 */}
         <script

@@ -15,7 +15,7 @@
   --color-success: #34d399;
 
   --font-sans:
-    var(--font-pretendard), -apple-system, BlinkMacSystemFont, sans-serif;
+    "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
 
   --animate-fade-in-up: fadeInUp 0.4s ease both;
