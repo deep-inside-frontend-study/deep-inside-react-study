@@ -1,11 +1,9 @@
-import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/constants";
-import { Avatar } from "@/components/ui/Avatar";
+import { getMemberColors } from "@/lib/getMemberColors";
+import { Avatar, AvatarProps } from "@/components/ui/Avatar";
 
-interface MemberAvatarProps {
+interface MemberAvatarProps extends Omit<AvatarProps, "fallback"> {
   memberId: string;
   displayName?: string;
-  size?: "sm" | "md" | "lg";
-  className?: string;
 }
 
 export function MemberAvatar({
@@ -13,8 +11,9 @@ export function MemberAvatar({
   displayName,
   size = "md",
   className = "",
+  ...props
 }: MemberAvatarProps) {
-  const colors = MEMBER_COLORS[memberId as MemberId] ?? DEFAULT_COLOR;
+  const colors = getMemberColors(memberId);
   const name = displayName || memberId;
   return (
     <Avatar
@@ -22,6 +21,7 @@ export function MemberAvatar({
       size={size}
       className={`${colors.base} text-white ${className}`}
       title={name}
+      {...props}
     />
   );
 }

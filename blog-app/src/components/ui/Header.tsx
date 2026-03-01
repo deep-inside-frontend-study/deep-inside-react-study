@@ -22,7 +22,7 @@ export function Header({
       <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Left */}
         <div className="flex flex-1 justify-start">
-          {left && <div className="flex items-center">{left}</div>}
+          {left ? <div className="flex items-center">{left}</div> : null}
         </div>
 
         {/* Title */}
@@ -32,7 +32,7 @@ export function Header({
 
         {/* Right */}
         <div className="flex flex-1 justify-end">
-          {right && <div className="flex items-center">{right}</div>}
+          {right ? <div className="flex items-center">{right}</div> : null}
         </div>
       </div>
     </header>

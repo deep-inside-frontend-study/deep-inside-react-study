@@ -1,5 +1,5 @@
 import { MemberAvatar } from "./MemberAvatar";
-import { MEMBER_COLORS, DEFAULT_COLOR, MemberId } from "@/constants";
+import { getMemberColors } from "@/lib/getMemberColors";
 
 interface MemberSelectChipProps {
   memberId: string;
@@ -12,7 +12,7 @@ export function MemberSelectChip({
   isActive,
   onClick,
 }: MemberSelectChipProps) {
-  const colors = MEMBER_COLORS[memberId as MemberId] ?? DEFAULT_COLOR;
+  const colors = getMemberColors(memberId);
 
   return (
     <button

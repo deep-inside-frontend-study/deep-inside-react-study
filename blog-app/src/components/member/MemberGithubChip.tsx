@@ -1,18 +1,14 @@
 import { MemberAvatar } from "./MemberAvatar";
+import { getMemberColors } from "@/lib/getMemberColors";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
-import {
-  MEMBER_COLORS,
-  DEFAULT_COLOR,
-  MEMBER_GITHUB,
-  MemberId,
-} from "@/constants";
+import { MEMBER_GITHUB, MemberId } from "@/constants/members";
 
 interface MemberGithubChipProps {
   memberId: string;
 }
 
 export function MemberGithubChip({ memberId }: MemberGithubChipProps) {
-  const colors = MEMBER_COLORS[memberId as MemberId] ?? DEFAULT_COLOR;
+  const colors = getMemberColors(memberId);
   const githubInfo = MEMBER_GITHUB[memberId as MemberId];
 
   if (!githubInfo) return null;

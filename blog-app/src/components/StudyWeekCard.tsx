@@ -1,16 +1,14 @@
 import Link from "next/link";
 import { StudyWeek } from "@/types";
-import { MemberAvatar } from "./MemberAvatar";
+import { MemberAvatar } from "@/components/member/MemberAvatar";
+import { formatChapterRange } from "@/lib/formatChapterRange";
 
 function deriveCardData(week: StudyWeek) {
   const members = [
     ...new Set(week.chapters.flatMap((w) => w.members.map((m) => m.member))),
   ];
   const chapNums = week.chapters.map((w) => w.week);
-  const chapterRange =
-    chapNums.length > 1
-      ? `${chapNums[0]}~${chapNums[chapNums.length - 1]}장`
-      : `${chapNums[0]}장`;
+  const chapterRange = formatChapterRange(chapNums);
   return { members, chapNums, chapterRange };
 }
 
@@ -38,7 +36,8 @@ function Header({ weekNum, members }: { weekNum: number; members: string[] }) {
               key={name}
               memberId={name}
               size="lg"
-              className={`border-2 border-[#0a0e1a] ${i > 0 ? "-ml-2" : ""} z-[${10 - i}]`}
+              style={{ zIndex: 10 - i }}
+              className={`border-2 border-[#0a0e1a] ${i > 0 ? "-ml-2" : ""}`}
             />
           ))}
           {overflow > 0 && (
