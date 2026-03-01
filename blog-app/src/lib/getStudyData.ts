@@ -6,7 +6,7 @@ import {
   type MemberPost,
   type WeekData,
   type StudyWeek,
-} from "./types";
+} from "@/types";
 import { CHAPTER_MAP, PART_MAP } from "@/constants";
 
 export function getPart(week: number): string {

@@ -1,4 +1,4 @@
-import { StudyWeek } from "@/lib/types";
+import { StudyWeek } from "@/types";
 
 export function getStudyStats(studyWeeks: StudyWeek[]) {
   const totalChapters = studyWeeks.reduce(
