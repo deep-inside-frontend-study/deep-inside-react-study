@@ -19,6 +19,12 @@ export interface WeekData {
   members: MemberPost[];
 }
 
+/** 3개 챕터씩 묶은 주차 단위 스터디 세션 */
+export interface StudySession {
+  sessionNum: number; // 1-based (1주차, 2주차...)
+  weeks: WeekData[]; // 1~3개
+}
+
 // LIST.md에서 챕터 제목 파싱
 const CHAPTER_MAP: Record<number, string> = {
   1: "프론트엔드 구성 요소와 발전 과정 돌아보기",
@@ -130,3 +136,29 @@ export function getWeekSlugs(): string[] {
     .filter((name) => name.startsWith("week"))
     .sort();
 }
+
+/**
+ * 챕터(week)를 3개씩 묶어 주차별 스터디 세션으로 반환
+ * e.g. [week01,week02,week03] → session 1, [week04,...] → session 2
+ */
+export const getAllSessions = cache(
+  function getAllSessionsImpl(): StudySession[] {
+    const weeks = getAllWeeks();
+    const sessions: StudySession[] = [];
+    const CHAPTERS_PER_SESSION = 3;
+
+    for (let i = 0; i < weeks.length; i += CHAPTERS_PER_SESSION) {
+      sessions.push({
+        sessionNum: Math.floor(i / CHAPTERS_PER_SESSION) + 1,
+        weeks: weeks.slice(i, i + CHAPTERS_PER_SESSION),
+      });
+    }
+    return sessions;
+  },
+);
+
+export const getSessionData = cache(function getSessionDataImpl(
+  sessionNum: number,
+): StudySession | null {
+  return getAllSessions().find((s) => s.sessionNum === sessionNum) ?? null;
+});
