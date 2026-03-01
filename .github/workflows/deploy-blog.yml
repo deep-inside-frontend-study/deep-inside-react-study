@@ -5,12 +5,7 @@ on:
   push:
     branches:
       - main
-  # PR이 main으로 merge 완료될 때 명시적으로도 트리거
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed
+
   # 수동 트리거
   workflow_dispatch:
 
