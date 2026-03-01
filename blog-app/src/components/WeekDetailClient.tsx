@@ -1,33 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { StudySession, WeekData, FileType } from "@/lib/getStudyData";
+import { StudyWeek, FileType, FILE_TYPES } from "@/lib/getStudyData";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const FILE_META: Record<
   FileType,
-  { icon: string; label: string; activeClass: string; color: string }
+  { icon: string; label: string; activeClass: string }
 > = {
   summary: {
     icon: "📝",
     label: "Summary",
     activeClass:
       "bg-[rgba(99,120,255,0.12)] text-[#818cf8] shadow-[0_0_0_1px_rgba(99,120,255,0.25)]",
-    color: "#6378ff",
   },
   questions: {
     icon: "❓",
     label: "Questions",
     activeClass:
       "bg-[rgba(251,191,36,0.12)] text-[#fbbf24] shadow-[0_0_0_1px_rgba(251,191,36,0.25)]",
-    color: "#fbbf24",
   },
   insights: {
     icon: "💡",
     label: "Insights",
     activeClass:
       "bg-[rgba(52,211,153,0.12)] text-[#34d399] shadow-[0_0_0_1px_rgba(52,211,153,0.25)]",
-    color: "#34d399",
   },
 };
 
@@ -39,77 +36,52 @@ const MEMBER_COLOR_MAP = new Map<string, string>([
   ["hsy", "#fb7185"],
 ]);
 
-const FILE_TYPES: FileType[] = ["summary", "questions", "insights"];
-
-export default function SessionDetailClient({
-  session,
+export default function WeekDetailClient({
+  studyWeek,
 }: {
-  session: StudySession;
+  studyWeek: StudyWeek;
 }) {
-  const [activeWeek, setActiveWeek] = useState<WeekData>(session.weeks[0]);
-  const [activeMember, setActiveMember] = useState(
-    session.weeks[0]?.members[0]?.member ?? "",
+  const allMembers = Array.from(
+    new Set(studyWeek.chapters.flatMap((w) => w.members.map((m) => m.member))),
   );
+
+  const [activeMember, setActiveMember] = useState(allMembers[0] ?? "");
   const [activeFileType, setActiveFileType] = useState<FileType>("summary");
 
-  function handleWeekChange(week: WeekData) {
-    setActiveWeek(week);
-    setActiveMember(week.members[0]?.member ?? "");
-    setActiveFileType("summary");
-  }
+  // 3개 챕터 분량의 데이터를 하나로 합칩니다 (챕터 탭 없이 한 번에 표시하기 위함)
+  const currentContent = studyWeek.chapters
+    .map((chapter) => {
+      const memberData = chapter.members.find((m) => m.member === activeMember);
+      const fileContent = memberData?.files.find(
+        (f) => f.type === activeFileType,
+      )?.content;
+      if (!fileContent) return null;
 
-  // js-index-maps: Map으로 O(1) 콘텐츠 조회
-  const memberFileMap = new Map(
-    activeWeek.members.map((m) => [
-      m.member,
-      new Map(m.files.map((f) => [f.type, f.content])),
-    ]),
-  );
-  const currentContent =
-    memberFileMap.get(activeMember)?.get(activeFileType) ?? "";
-  const currentMemberData = activeWeek.members.find(
-    (m) => m.member === activeMember,
-  );
+      return `## ${chapter.week}장: ${chapter.chapterTitle}\n\n${fileContent}`;
+    })
+    .filter(Boolean)
+    .join("\n\n---\n\n");
+
+  // 해당 멤버가 현재 파일 타입에 대해 쓴 내용이 존재하는지 확인 (모든 챕터 통합)
+  const hasContentFn = (type: FileType) =>
+    studyWeek.chapters.some((chapter) =>
+      chapter.members
+        .find((m) => m.member === activeMember)
+        ?.files.some((f) => f.type === type && f.content.trim()),
+    );
 
   return (
     <div>
-      {/* ── 챕터 탭 ── */}
-      <div className="flex gap-2 flex-wrap mb-2">
-        {session.weeks.map((w) => {
-          const isActive = w.slug === activeWeek.slug;
-          return (
-            <button
-              key={w.slug}
-              onClick={() => handleWeekChange(w)}
-              className={[
-                "px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer",
-                isActive
-                  ? "bg-[rgba(99,120,255,0.12)] text-[#818cf8] font-bold border-[1.5px] border-[#6378ff]"
-                  : "bg-transparent text-slate-500 font-normal border-[1.5px] border-[rgba(99,120,255,0.15)] hover:text-slate-300",
-              ].join(" ")}
-              style={{ fontFamily: "inherit" }}
-            >
-              {w.week}장
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 챕터 제목 */}
-      <p className="text-slate-500 text-xs mb-5 pl-1">
-        {activeWeek.chapterTitle}
-      </p>
-
       {/* ── 멤버 탭 ── */}
       <div className="flex gap-2 flex-wrap mb-5">
-        {activeWeek.members.length > 0 ? (
-          activeWeek.members.map((m) => {
-            const isActive = m.member === activeMember;
-            const color = MEMBER_COLOR_MAP.get(m.member) ?? "#94a3b8";
+        {allMembers.length > 0 ? (
+          allMembers.map((member) => {
+            const isActive = member === activeMember;
+            const color = MEMBER_COLOR_MAP.get(member) ?? "#94a3b8";
             return (
               <button
-                key={m.member}
-                onClick={() => setActiveMember(m.member)}
+                key={member}
+                onClick={() => setActiveMember(member)}
                 className="flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer"
                 style={{
                   border: `1.5px solid ${isActive ? color : "rgba(99,120,255,0.15)"}`,
@@ -123,9 +95,9 @@ export default function SessionDetailClient({
                   className="w-6 h-6 rounded-full flex items-center justify-center text-[0.65rem] font-bold text-white shrink-0"
                   style={{ background: color }}
                 >
-                  {m.member.charAt(0).toUpperCase()}
+                  {member.charAt(0).toUpperCase()}
                 </div>
-                {m.member}
+                {member}
               </button>
             );
           })
@@ -139,9 +111,8 @@ export default function SessionDetailClient({
         {FILE_TYPES.map((type) => {
           const meta = FILE_META[type];
           const isActive = type === activeFileType;
-          const hasContent = currentMemberData?.files.some(
-            (f) => f.type === type && f.content.trim(),
-          );
+          const hasContent = hasContentFn(type);
+
           return (
             <button
               key={type}
@@ -165,7 +136,16 @@ export default function SessionDetailClient({
 
       {/* ── 콘텐츠 ── */}
       <div className="glass-card p-8 min-h-[300px]">
-        <MarkdownRenderer content={currentContent} />
+        {currentContent ? (
+          <MarkdownRenderer content={currentContent} />
+        ) : (
+          <div className="flex flex-col items-center justify-center text-slate-500 py-12 gap-3 h-full">
+            <span className="text-3xl">📝</span>
+            <p className="text-sm">
+              현재 선택된 항목에 작성된 내용이 없습니다.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

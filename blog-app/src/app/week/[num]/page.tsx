@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getAllSessions, getSessionData } from "@/lib/getStudyData";
-import SessionDetailClient from "@/components/SessionDetailClient";
+import { getStudyWeeks, getStudyWeekData } from "@/lib/getStudyData";
+import WeekDetailClient from "@/components/WeekDetailClient";
 
 export async function generateStaticParams() {
-  const sessions = getAllSessions();
-  return sessions.map((s) => ({ num: String(s.sessionNum) }));
+  const studyWeeks = getStudyWeeks();
+  return studyWeeks.map((s) => ({ num: String(s.weekNum) }));
 }
 
 export async function generateMetadata({
@@ -14,10 +14,10 @@ export async function generateMetadata({
   params: Promise<{ num: string }>;
 }) {
   const { num } = await params;
-  const session = getSessionData(Number(num));
-  if (!session) return { title: "Not Found" };
+  const weekData = getStudyWeekData(Number(num));
+  if (!weekData) return { title: "Not Found" };
 
-  const chapterNums = session.weeks.map((w) => w.week);
+  const chapterNums = weekData.chapters.map((w) => w.week);
   const range =
     chapterNums.length > 1
       ? `${chapterNums[0]}~${chapterNums[chapterNums.length - 1]}장`
@@ -25,28 +25,28 @@ export async function generateMetadata({
 
   return {
     title: `${num}주차 스터디 (${range})`,
-    description: `인사이드 리액트 ${range} 스터디 기록. ${session.weeks.map((w) => w.chapterTitle).join(", ")}`,
+    description: `인사이드 리액트 ${range} 스터디 기록. ${weekData.chapters.map((w) => w.chapterTitle).join(", ")}`,
   };
 }
 
-export default async function SessionPage({
+export default async function StudyWeekPage({
   params,
 }: {
   params: Promise<{ num: string }>;
 }) {
   const { num } = await params;
-  const session = getSessionData(Number(num));
-  if (!session) notFound();
+  const weekData = getStudyWeekData(Number(num));
+  if (!weekData) notFound();
 
-  const sessions = getAllSessions();
-  const currentIdx = sessions.findIndex(
-    (s) => s.sessionNum === session.sessionNum,
+  const studyWeeks = getStudyWeeks();
+  const currentIdx = studyWeeks.findIndex(
+    (s) => s.weekNum === weekData.weekNum,
   );
-  const prevSession = currentIdx > 0 ? sessions[currentIdx - 1] : null;
-  const nextSession =
-    currentIdx < sessions.length - 1 ? sessions[currentIdx + 1] : null;
+  const prevWeek = currentIdx > 0 ? studyWeeks[currentIdx - 1] : null;
+  const nextWeek =
+    currentIdx < studyWeeks.length - 1 ? studyWeeks[currentIdx + 1] : null;
 
-  const chapterNums = session.weeks.map((w) => w.week);
+  const chapterNums = weekData.chapters.map((w) => w.week);
   const chapterRange =
     chapterNums.length > 1
       ? `${chapterNums[0]}~${chapterNums[chapterNums.length - 1]}장`
@@ -64,7 +64,7 @@ export default async function SessionPage({
             ← 목록으로
           </Link>
           <div className="flex-1 h-px bg-[rgba(99,120,255,0.15)]" />
-          <span className="badge badge-part2">{session.sessionNum}주차</span>
+          <span className="badge badge-part2">{weekData.weekNum}주차</span>
         </div>
       </div>
 
@@ -72,26 +72,26 @@ export default async function SessionPage({
       <div className="px-6 pt-10 pb-8 text-center bg-gradient-to-b from-[rgba(99,120,255,0.05)] to-transparent">
         <div className="max-w-3xl mx-auto">
           <div className="text-8xl font-black leading-none mb-2 tabular-nums select-none text-[rgba(99,120,255,0.12)]">
-            {String(session.sessionNum).padStart(2, "0")}
+            {String(weekData.weekNum).padStart(2, "0")}
           </div>
           <h1 className="text-2xl md:text-3xl font-bold leading-snug mb-2">
-            {session.sessionNum}주차 스터디
+            {weekData.weekNum}주차 스터디
           </h1>
           <p className="text-slate-500 text-sm">
-            {chapterRange} · {session.weeks.length}개 챕터
+            {chapterRange} · {weekData.chapters.length}개 챕터
           </p>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-6 pb-16">
-        <SessionDetailClient session={session} />
+        <WeekDetailClient studyWeek={weekData} />
 
         {/* Prev / Next */}
         <div className="flex gap-4 mt-10">
-          {prevSession ? (
+          {prevWeek ? (
             <Link
-              href={`/session/${prevSession.sessionNum}`}
+              href={`/week/${prevWeek.weekNum}`}
               className="flex-1 no-underline"
             >
               <div className="glass-card p-4 flex items-center gap-3">
@@ -101,7 +101,7 @@ export default async function SessionPage({
                     이전 주차
                   </div>
                   <div className="text-sm text-slate-200 font-medium">
-                    {prevSession.sessionNum}주차
+                    {prevWeek.weekNum}주차
                   </div>
                 </div>
               </div>
@@ -110,9 +110,9 @@ export default async function SessionPage({
             <div className="flex-1" />
           )}
 
-          {nextSession ? (
+          {nextWeek ? (
             <Link
-              href={`/session/${nextSession.sessionNum}`}
+              href={`/week/${nextWeek.weekNum}`}
               className="flex-1 no-underline"
             >
               <div className="glass-card p-4 flex items-center justify-end gap-3">
@@ -121,7 +121,7 @@ export default async function SessionPage({
                     다음 주차
                   </div>
                   <div className="text-sm text-slate-200 font-medium">
-                    {nextSession.sessionNum}주차
+                    {nextWeek.weekNum}주차
                   </div>
                 </div>
                 <span className="text-slate-500">→</span>

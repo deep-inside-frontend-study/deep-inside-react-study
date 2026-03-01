@@ -2,7 +2,8 @@ import { cache } from "react";
 import fs from "fs";
 import path from "path";
 
-export type FileType = "summary" | "questions" | "insights";
+export const FILE_TYPES = ["summary", "questions", "insights"] as const;
+export type FileType = (typeof FILE_TYPES)[number];
 
 export interface MemberPost {
   member: string;
@@ -19,9 +20,10 @@ export interface WeekData {
   members: MemberPost[];
 }
 
-export interface StudySession {
-  sessionNum: number;
-  weeks: WeekData[];
+/** 3개 챕터씩 묶은 주차 단위 스터디 (ex: 1주차 = 1~3장) */
+export interface StudyWeek {
+  weekNum: number; // 1-based (1주차, 2주차...)
+  chapters: WeekData[]; // 1~3개의 챕터 데이터
 }
 
 /** 3개 챕터씩 묶은 주차 단위 스터디 세션 */
@@ -80,7 +82,6 @@ export function getPart(week: number): string {
 }
 
 const WEEKS_DIR = path.join(process.cwd(), "..", "weeks");
-const FILE_TYPES: FileType[] = ["summary", "questions", "insights"];
 
 function readFileSafe(filePath: string): string {
   try {
@@ -142,24 +143,26 @@ export function getWeekSlugs(): string[] {
     .sort();
 }
 
-export const getAllSessions = cache(
-  function getAllSessionsImpl(): StudySession[] {
-    const weeks = getAllWeeks();
-    const sessions: StudySession[] = [];
-    const CHAPTERS_PER_SESSION = 3;
+/**
+ * 챕터(week 모듈)를 3개씩 묶어 주차별 스터디(StudyWeek)로 반환
+ * e.g. [챕터1, 챕터2, 챕터3] → 1주차, [챕터4,...] → 2주차
+ */
+export const getStudyWeeks = cache(function getStudyWeeksImpl(): StudyWeek[] {
+  const chapters = getAllWeeks();
+  const studyWeeks: StudyWeek[] = [];
+  const CHAPTERS_PER_WEEK = 3;
 
-    for (let i = 0; i < weeks.length; i += CHAPTERS_PER_SESSION) {
-      sessions.push({
-        sessionNum: Math.floor(i / CHAPTERS_PER_SESSION) + 1,
-        weeks: weeks.slice(i, i + CHAPTERS_PER_SESSION),
-      });
-    }
-    return sessions;
-  },
-);
+  for (let i = 0; i < chapters.length; i += CHAPTERS_PER_WEEK) {
+    studyWeeks.push({
+      weekNum: Math.floor(i / CHAPTERS_PER_WEEK) + 1,
+      chapters: chapters.slice(i, i + CHAPTERS_PER_WEEK),
+    });
+  }
+  return studyWeeks;
+});
 
-export const getSessionData = cache(function getSessionDataImpl(
-  sessionNum: number,
-): StudySession | null {
-  return getAllSessions().find((s) => s.sessionNum === sessionNum) ?? null;
+export const getStudyWeekData = cache(function getStudyWeekDataImpl(
+  weekNum: number,
+): StudyWeek | null {
+  return getStudyWeeks().find((s) => s.weekNum === weekNum) ?? null;
 });
