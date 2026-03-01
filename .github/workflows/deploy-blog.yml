@@ -58,7 +58,7 @@ jobs:
         working-directory: blog-app
         env:
           NODE_ENV: production
-          GITHUB_REPO_NAME: deep-inside-react-study
+          NEXT_PUBLIC_BASE_URL: https://${{ github.repository_owner }}.github.io/deep-inside-react-study
         run: pnpm build
 
       - name: Upload Pages artifact

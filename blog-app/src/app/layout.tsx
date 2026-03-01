@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-// GitHub Pages 배포 시 GITHUB_REPO_NAME 환경변수로 실제 URL이 결정됩니다.
-// 로컬 개발 환경에서는 localhost를 사용합니다.
-const REPO_NAME = process.env.GITHUB_REPO_NAME ?? "";
-const BASE_URL = REPO_NAME
-  ? `https://[YOUR_GITHUB_ID].github.io/${REPO_NAME}`
-  : "http://localhost:3000";
+// GitHub Pages 배포 시: NEXT_PUBLIC_BASE_URL=https://<id>.github.io/<repo>
+// 로컬 개발 시: localhost 자동 fallback
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

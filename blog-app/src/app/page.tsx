@@ -8,19 +8,20 @@ const PART_COLORS: Record<string, string> = {
   "PART 4": "badge-part4",
 };
 
-const MEMBER_COLORS: Record<string, string> = {
-  hyunwoo: "#6378ff",
-  jisoo: "#a78bfa",
-  joohyung: "#38bdf8",
-  seungho: "#34d399",
-  hsy: "#fb7185",
-};
+// js-index-maps: Map으로 O(1) 조회
+const MEMBER_COLOR_MAP = new Map<string, string>([
+  ["hyunwoo", "#6378ff"],
+  ["jisoo", "#a78bfa"],
+  ["joohyung", "#38bdf8"],
+  ["seungho", "#34d399"],
+  ["hsy", "#fb7185"],
+]);
 
 function getInitial(name: string) {
   return name.charAt(0).toUpperCase();
 }
 function getMemberColor(name: string) {
-  return MEMBER_COLORS[name] ?? "#94a3b8";
+  return MEMBER_COLOR_MAP.get(name) ?? "#94a3b8";
 }
 
 function WeekCard({ week, index }: { week: WeekData; index: number }) {
@@ -45,8 +46,8 @@ function WeekCard({ week, index }: { week: WeekData; index: number }) {
             </span>
           </div>
 
-          {/* Member avatars */}
-          {week.members.length > 0 && (
+          {/* rendering-conditional-render: && 대신 ternary */}
+          {week.members.length > 0 ? (
             <div className="flex items-center">
               {week.members.map((m, i) => (
                 <div
@@ -63,7 +64,7 @@ function WeekCard({ week, index }: { week: WeekData; index: number }) {
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Chapter title */}

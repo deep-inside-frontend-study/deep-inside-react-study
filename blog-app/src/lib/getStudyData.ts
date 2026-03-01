@@ -1,3 +1,4 @@
+import { cache } from "react";
 import fs from "fs";
 import path from "path";
 
@@ -78,7 +79,8 @@ function readFileSafe(filePath: string): string {
   }
 }
 
-export function getAllWeeks(): WeekData[] {
+// server-cache-react: React.cache()로 per-request 중복 파일 I/O 제거
+export const getAllWeeks = cache(function getAllWeeksImpl(): WeekData[] {
   const weeksDir = WEEKS_DIR;
   const weekFolders = fs
     .readdirSync(weeksDir)
@@ -111,12 +113,15 @@ export function getAllWeeks(): WeekData[] {
       members,
     };
   });
-}
+});
 
-export function getWeekData(slug: string): WeekData | null {
+// server-cache-react: slug lookup도 cache로 감쌈
+export const getWeekData = cache(function getWeekDataImpl(
+  slug: string,
+): WeekData | null {
   const weeks = getAllWeeks();
   return weeks.find((w) => w.slug === slug) ?? null;
-}
+});
 
 export function getWeekSlugs(): string[] {
   const weeksDir = WEEKS_DIR;

@@ -28,18 +28,19 @@ const FILE_META: Record<
   },
 };
 
-const MEMBER_COLORS: Record<string, string> = {
-  hyunwoo: "#6378ff",
-  jisoo: "#a78bfa",
-  joohyung: "#38bdf8",
-  seungho: "#34d399",
-  hsy: "#fb7185",
-};
+// js-index-maps: Map으로 O(1) 조회
+const MEMBER_COLOR_MAP = new Map<string, string>([
+  ["hyunwoo", "#6378ff"],
+  ["jisoo", "#a78bfa"],
+  ["joohyung", "#38bdf8"],
+  ["seungho", "#34d399"],
+  ["hsy", "#fb7185"],
+]);
 
 const FILE_TYPES: FileType[] = ["summary", "questions", "insights"];
 
 function getMemberColor(name: string) {
-  return MEMBER_COLORS[name] ?? "#94a3b8";
+  return MEMBER_COLOR_MAP.get(name) ?? "#94a3b8";
 }
 
 export default function WeekDetailClient({ week }: { week: WeekData }) {
@@ -48,10 +49,16 @@ export default function WeekDetailClient({ week }: { week: WeekData }) {
   );
   const [activeFileType, setActiveFileType] = useState<FileType>("summary");
 
-  const currentMemberData = week.members.find((m) => m.member === activeMember);
-  const currentFile = currentMemberData?.files.find(
-    (f) => f.type === activeFileType,
+  // rerender-derived-state: member/file 조회를 Map으로 최적화
+  const memberFileMap = new Map(
+    week.members.map((m) => [
+      m.member,
+      new Map(m.files.map((f) => [f.type, f.content])),
+    ]),
   );
+  const currentMemberData = week.members.find((m) => m.member === activeMember);
+  const currentContent =
+    memberFileMap.get(activeMember)?.get(activeFileType) ?? "";
 
   return (
     <div>
@@ -121,7 +128,7 @@ export default function WeekDetailClient({ week }: { week: WeekData }) {
 
       {/* Content */}
       <div className="glass-card p-8 min-h-[300px]">
-        <MarkdownRenderer content={currentFile?.content ?? ""} />
+        <MarkdownRenderer content={currentContent} />
       </div>
     </div>
   );
