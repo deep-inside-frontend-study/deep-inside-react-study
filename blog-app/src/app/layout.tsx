@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
-// GitHub Pages 배포 시: NEXT_PUBLIC_BASE_URL=https://<id>.github.io/<repo>
-// 로컬 개발 시: localhost 자동 fallback
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+import { BASE_URL } from "@/constants/config";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
