@@ -29,6 +29,13 @@ const FILE_META: Record<
   },
 };
 
+const ContentEmptyState = (
+  <div className="flex flex-col items-center justify-center text-slate-500 py-12 gap-3 h-full">
+    <span className="text-3xl">📝</span>
+    <p className="text-sm">현재 선택된 항목에 작성된 내용이 없습니다.</p>
+  </div>
+);
+
 export function WeekDetailClient({ studyWeek }: { studyWeek: StudyWeek }) {
   const allMembers = Array.from(
     new Set(studyWeek.chapters.flatMap((w) => w.members.map((m) => m.member))),
@@ -105,14 +112,7 @@ export function WeekDetailClient({ studyWeek }: { studyWeek: StudyWeek }) {
       <div className="glass-card p-8 min-h-[300px]">
         <MarkdownRenderer
           content={currentContent}
-          emptyState={
-            <div className="flex flex-col items-center justify-center text-slate-500 py-12 gap-3 h-full">
-              <span className="text-3xl">📝</span>
-              <p className="text-sm">
-                현재 선택된 항목에 작성된 내용이 없습니다.
-              </p>
-            </div>
-          }
+          emptyState={ContentEmptyState}
         />
       </div>
     </div>
