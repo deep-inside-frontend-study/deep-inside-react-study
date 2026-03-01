@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
 /* ── Custom design tokens ── */
@@ -15,8 +14,9 @@
   --color-glow: rgba(99, 120, 255, 0.2);
   --color-success: #34d399;
 
-  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans:
+    var(--font-pretendard), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 
   --animate-fade-in-up: fadeInUp 0.4s ease both;
 }
