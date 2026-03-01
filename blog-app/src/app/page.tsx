@@ -3,7 +3,6 @@ import { getStudyStats } from "./_lib/getStudyStats";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { StudyWeekCard } from "@/components/StudyWeekCard";
 import { StatCard } from "@/components/StatCard";
-
 import { REPO_URL } from "@/constants";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import { MemberGithubChip } from "@/components/MemberGithubChip";
@@ -15,21 +14,9 @@ export default function HomePage() {
     getStudyStats(studyWeeks);
 
   const stats = [
-    {
-      value: totalWeeks,
-      label: "주차",
-      textClass: "text-[#6378ff]",
-    },
-    {
-      value: totalChapters,
-      label: "챕터",
-      textClass: "text-[#a78bfa]",
-    },
-    {
-      value: totalContributions,
-      label: "기록",
-      textClass: "text-[#38bdf8]",
-    },
+    { value: totalWeeks, label: "주차", textClass: "text-[#6378ff]" },
+    { value: totalChapters, label: "챕터", textClass: "text-[#a78bfa]" },
+    { value: totalContributions, label: "기록", textClass: "text-[#38bdf8]" },
   ];
 
   return (
@@ -84,12 +71,12 @@ export default function HomePage() {
       <div className="max-w-5xl mx-auto px-6 py-10 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
           {studyWeeks.map((week, i) => (
-            <StudyWeekCard key={week.weekNum} studyWeek={week} index={i} />
+            <StudyWeekCard key={week.weekNum} week={week} index={i} />
           ))}
         </div>
 
         {/* README Section */}
-        <div className="mt-16 fade-in-up" style={{ animationDelay: "0.5s" }}>
+        <div className="mt-16 fade-in-up delay-500">
           <div className="flex items-center gap-4 mb-8">
             <h2 className="text-2xl font-bold">About Study</h2>
             <div className="flex-1 h-px bg-gradient-to-r from-[rgba(99,120,255,0.2)] to-transparent" />

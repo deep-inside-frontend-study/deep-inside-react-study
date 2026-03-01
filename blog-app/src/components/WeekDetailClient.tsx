@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { StudyWeek, FileType, FILE_TYPES } from "@/lib/types";
+import { StudyWeek, FileType, FILE_TYPES } from "@/types";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { MemberSelectChip } from "@/components/MemberSelectChip";
 

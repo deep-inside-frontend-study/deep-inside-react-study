@@ -6,7 +6,6 @@ interface MemberAvatarProps {
   displayName?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
-  style?: React.CSSProperties;
 }
 
 export function MemberAvatar({
@@ -14,7 +13,6 @@ export function MemberAvatar({
   displayName,
   size = "md",
   className = "",
-  style,
 }: MemberAvatarProps) {
   const colors = MEMBER_COLORS[memberId as MemberId] ?? DEFAULT_COLOR;
   const name = displayName || memberId;
@@ -24,7 +22,6 @@ export function MemberAvatar({
       size={size}
       className={`${colors.base} text-white ${className}`}
       title={name}
-      style={style}
     />
   );
 }
