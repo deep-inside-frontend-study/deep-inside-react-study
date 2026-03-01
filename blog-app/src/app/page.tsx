@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getStudyWeeks, StudyWeek, getReadmeContent } from "@/lib/getStudyData";
+import { getStudyWeeks, getReadmeContent } from "@/lib/getStudyData";
+import { StudyWeek } from "@/lib/types";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const MEMBER_COLORS: Record<
@@ -120,7 +121,7 @@ function StudyWeekCard({
         <div className="flex flex-col gap-1.5">
           {chapters.map((w) => (
             <div
-              key={w.slug}
+              key={w.week}
               className="flex items-start gap-2 text-xs text-slate-400"
             >
               <span className="text-[#6378ff] font-mono shrink-0 mt-0.5">

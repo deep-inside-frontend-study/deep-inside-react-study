@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { StudyWeek, FileType, FILE_TYPES } from "@/lib/getStudyData";
+import { StudyWeek, FileType, FILE_TYPES } from "@/lib/types";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const FILE_META: Record<
@@ -82,19 +82,19 @@ export default function WeekDetailClient({
   const [activeMember, setActiveMember] = useState(allMembers[0] ?? "");
   const [activeFileType, setActiveFileType] = useState<FileType>("summary");
 
-  // 3개 챕터 분량의 데이터를 하나로 합칩니다 (챕터 탭 없이 한 번에 표시하기 위함)
-  const currentContent = studyWeek.chapters
-    .map((chapter) => {
-      const memberData = chapter.members.find((m) => m.member === activeMember);
-      const fileContent = memberData?.files.find(
-        (f) => f.type === activeFileType,
-      )?.content;
-      if (!fileContent) return null;
+  // 동일한 주차 폴더의 파일 내용이 각 챕터에 중복으로 들어있으므로 Set을 이용해 제거
+  const uniqueContents = new Set<string>();
+  studyWeek.chapters.forEach((chapter) => {
+    const memberData = chapter.members.find((m) => m.member === activeMember);
+    const fileContent = memberData?.files.find(
+      (f) => f.type === activeFileType,
+    )?.content;
+    if (fileContent) {
+      uniqueContents.add(fileContent);
+    }
+  });
 
-      return `## ${chapter.week}장: ${chapter.chapterTitle}\n\n${fileContent}`;
-    })
-    .filter(Boolean)
-    .join("\n\n---\n\n");
+  const currentContent = Array.from(uniqueContents).join("\n\n---\n\n");
 
   // 해당 멤버가 현재 파일 타입에 대해 쓴 내용이 존재하는지 확인 (모든 챕터 통합)
   const hasContentFn = (type: FileType) =>

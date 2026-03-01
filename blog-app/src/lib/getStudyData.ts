@@ -1,36 +1,12 @@
 import { cache } from "react";
 import fs from "fs";
 import path from "path";
-
-export const FILE_TYPES = ["summary", "questions", "insights"] as const;
-export type FileType = (typeof FILE_TYPES)[number];
-
-export interface MemberPost {
-  member: string;
-  files: {
-    type: FileType;
-    content: string;
-  }[];
-}
-
-export interface WeekData {
-  week: number;
-  slug: string;
-  chapterTitle: string;
-  members: MemberPost[];
-}
-
-/** 3개 챕터씩 묶은 주차 단위 스터디 (ex: 1주차 = 1~3장) */
-export interface StudyWeek {
-  weekNum: number; // 1-based (1주차, 2주차...)
-  chapters: WeekData[]; // 1~3개의 챕터 데이터
-}
-
-/** 3개 챕터씩 묶은 주차 단위 스터디 세션 */
-export interface StudySession {
-  sessionNum: number; // 1-based (1주차, 2주차...)
-  weeks: WeekData[]; // 1~3개
-}
+import {
+  FILE_TYPES,
+  type MemberPost,
+  type WeekData,
+  type StudyWeek,
+} from "./types";
 
 // LIST.md에서 챕터 제목 파싱
 const CHAPTER_MAP: Record<number, string> = {
@@ -91,73 +67,72 @@ function readFileSafe(filePath: string): string {
   }
 }
 
-// server-cache-react: React.cache()로 per-request 중복 파일 I/O 제거
-export const getAllWeeks = cache(function getAllWeeksImpl(): WeekData[] {
+/**
+ * weeks 폴더 구조를 그대로 따르되,
+ * 1주차 = week01 폴더 = 1~3장
+ * 2주차 = week02 폴더 = 4~6장
+ * ...
+ * 와 같이 매핑합니다. 내용이 있는 주차만 반환합니다.
+ */
+export const getStudyWeeks = cache(function getStudyWeeksImpl(): StudyWeek[] {
   const weeksDir = WEEKS_DIR;
+  // 존재하는 week 폴더들 찾기
   const weekFolders = fs
     .readdirSync(weeksDir)
     .filter((name) => name.startsWith("week"))
     .sort();
 
-  return weekFolders.map((folder) => {
+  const studyWeeks: StudyWeek[] = [];
+
+  for (const folder of weekFolders) {
     const weekNum = parseInt(folder.replace("week", ""), 10);
     const weekPath = path.join(weeksDir, folder);
 
-    const entries = fs.readdirSync(weekPath);
-    const memberFolders = entries.filter((entry) => {
-      const stat = fs.statSync(path.join(weekPath, entry));
-      return stat.isDirectory();
-    });
+    // 해당 폴더의 멤버 파싱
+    let members: MemberPost[] = [];
+    if (fs.existsSync(weekPath)) {
+      const entries = fs.readdirSync(weekPath);
+      const memberFolders = entries.filter((entry) => {
+        const stat = fs.statSync(path.join(weekPath, entry));
+        return stat.isDirectory();
+      });
 
-    const members: MemberPost[] = memberFolders.map((member) => {
-      const memberPath = path.join(weekPath, member);
-      const files = FILE_TYPES.map((type) => ({
-        type,
-        content: readFileSafe(path.join(memberPath, `${type}.md`)),
-      })).filter((f) => f.content.length > 0);
-      return { member, files };
-    });
+      members = memberFolders
+        .map((member) => {
+          const memberPath = path.join(weekPath, member);
+          const files = FILE_TYPES.map((type) => ({
+            type,
+            content: readFileSafe(path.join(memberPath, `${type}.md`)),
+          })).filter((f) => f.content.length > 0);
+          return { member, files };
+        })
+        .filter((m) => m.files.length > 0);
+    }
 
-    return {
-      week: weekNum,
-      slug: folder,
-      chapterTitle: CHAPTER_MAP[weekNum] ?? `Week ${weekNum}`,
-      members,
-    };
-  });
-});
+    // 작성된 내용이 없는(멤버가 0명인) 템플릿 주차는 표기하지 않음
+    if (members.length === 0) continue;
 
-// server-cache-react: slug lookup도 cache로 감쌈
-export const getWeekData = cache(function getWeekDataImpl(
-  slug: string,
-): WeekData | null {
-  const weeks = getAllWeeks();
-  return weeks.find((w) => w.slug === slug) ?? null;
-});
+    const startChapter = (weekNum - 1) * 3 + 1;
+    const endChapter = Math.min(weekNum * 3, 19);
 
-export function getWeekSlugs(): string[] {
-  const weeksDir = WEEKS_DIR;
-  return fs
-    .readdirSync(weeksDir)
-    .filter((name) => name.startsWith("week"))
-    .sort();
-}
+    if (startChapter > 19) continue;
 
-/**
- * 챕터(week 모듈)를 3개씩 묶어 주차별 스터디(StudyWeek)로 반환
- * e.g. [챕터1, 챕터2, 챕터3] → 1주차, [챕터4,...] → 2주차
- */
-export const getStudyWeeks = cache(function getStudyWeeksImpl(): StudyWeek[] {
-  const chapters = getAllWeeks();
-  const studyWeeks: StudyWeek[] = [];
-  const CHAPTERS_PER_WEEK = 3;
+    const chapters: WeekData[] = [];
+    for (let c = startChapter; c <= endChapter; c++) {
+      chapters.push({
+        week: c,
+        slug: folder,
+        chapterTitle: CHAPTER_MAP[c] ?? `${c}장`,
+        members, // 전체 멤버를 동일하게 넣어줌
+      });
+    }
 
-  for (let i = 0; i < chapters.length; i += CHAPTERS_PER_WEEK) {
     studyWeeks.push({
-      weekNum: Math.floor(i / CHAPTERS_PER_WEEK) + 1,
-      chapters: chapters.slice(i, i + CHAPTERS_PER_WEEK),
+      weekNum,
+      chapters,
     });
   }
+
   return studyWeeks;
 });
 
