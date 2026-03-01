@@ -23,6 +23,7 @@ export function MemberGithubChip({ memberId }: MemberGithubChipProps) {
       href={github}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={`${displayName}의 GitHub 프로필`}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full no-underline transition-all duration-200 hover:scale-105 border ${colors.bgSoft} ${colors.borderSoft}`}
     >
       <MemberAvatar memberId={memberId} displayName={displayName} size="sm" />

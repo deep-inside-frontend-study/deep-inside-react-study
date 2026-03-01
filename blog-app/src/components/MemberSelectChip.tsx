@@ -17,6 +17,8 @@ export function MemberSelectChip({
   return (
     <button
       onClick={onClick}
+      aria-pressed={isActive}
+      aria-label={`${memberId} 필터 토글`}
       className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200 cursor-pointer border-[1.5px] ${
         isActive
           ? `${colors.activeBg} ${colors.activeBorder} ${colors.activeText} font-bold`

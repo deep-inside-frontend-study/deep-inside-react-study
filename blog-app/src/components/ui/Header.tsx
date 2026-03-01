@@ -8,7 +8,6 @@ export interface HeaderProps extends Omit<
   title?: ReactNode;
   right?: ReactNode;
   className?: string;
-  ContainerProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 export function Header({
@@ -16,22 +15,25 @@ export function Header({
   title,
   right,
   className = "",
-  ContainerProps,
   ...props
 }: HeaderProps) {
   return (
     <header className={`w-full ${className}`} {...props}>
-      <div
-        className={`max-w-5xl mx-auto px-6 h-16 flex items-center justify-between ${
-          ContainerProps?.className || ""
-        }`}
-        {...ContainerProps}
-      >
-        <div className="flex-1 flex items-center justify-start">{left}</div>
-        <div className="flex-1 flex items-center justify-center font-bold text-lg">
+      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Left */}
+        <div className="flex flex-1 justify-start">
+          {left && <div className="flex items-center">{left}</div>}
+        </div>
+
+        {/* Title */}
+        <div className="flex flex-1 justify-center font-bold text-lg whitespace-nowrap px-4">
           {title}
         </div>
-        <div className="flex-1 flex items-center justify-end">{right}</div>
+
+        {/* Right */}
+        <div className="flex flex-1 justify-end">
+          {right && <div className="flex items-center">{right}</div>}
+        </div>
       </div>
     </header>
   );
