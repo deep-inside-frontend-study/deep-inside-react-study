@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getStudyWeeks, getStudyWeekData } from "@/lib/getStudyData";
+import { formatChapterRange } from "@/lib/formatChapterRange";
 import { getWeekNavigation } from "./_lib/getWeekNavigation";
 import { WeekDetailClient } from "./_components/WeekDetailClient";
 import { Header } from "@/components/ui/Header";
@@ -20,10 +21,7 @@ export async function generateMetadata({
   if (!weekData) return { title: "Not Found" };
 
   const chapterNums = weekData.chapters.map((w) => w.week);
-  const range =
-    chapterNums.length > 1
-      ? `${chapterNums[0]}~${chapterNums[chapterNums.length - 1]}장`
-      : `${chapterNums[0]}장`;
+  const range = formatChapterRange(chapterNums);
 
   return {
     title: `${num}주차 스터디 (${range})`,
@@ -47,10 +45,7 @@ export default async function StudyWeekPage({
   );
 
   const chapterNums = weekData.chapters.map((w) => w.week);
-  const chapterRange =
-    chapterNums.length > 1
-      ? `${chapterNums[0]}~${chapterNums[chapterNums.length - 1]}장`
-      : `${chapterNums[0]}장`;
+  const chapterRange = formatChapterRange(chapterNums);
 
   return (
     <main className="min-h-screen">
