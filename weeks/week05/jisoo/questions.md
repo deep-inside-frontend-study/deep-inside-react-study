@@ -21,7 +21,7 @@
 
 
 
-## React Compiler가 보편화되면 프론트엔드 개발자의 “성능 최적화 역량”은 덜 중요해질까? 
+## Q2. React Compiler가 보편화되면 프론트엔드 개발자의 “성능 최적화 역량”은 덜 중요해질까? 
 → “최적화 기술”은 덜 중요해지고 “아키텍처 설계 능력”은 더 중요해질 것 같다
 
 #### React Compiler가 해주는 것
@@ -40,7 +40,7 @@
 
 
 
-## Compiler가 외부 상태 라이브러리(Zustand 등)까지 완벽히 최적화할 수 있을까?
+## Q3. Compiler가 외부 상태 라이브러리(Zustand 등)까지 완벽히 최적화할 수 있을까?
 → 불가능
 - Compiler는 React 컴포넌트 내부 코드만 분석 가능
 - Zustand 는 React 바깥에 있음 + store.subscribe 기반 + 외부 mutable 상태
