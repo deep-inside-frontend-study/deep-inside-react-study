@@ -15,6 +15,7 @@ fn();  // 그냥 함수 호출
 - useRef는 useEffectEvent가 생겨서 어느정도 파이를 뺏기지 않을까 생각해 봅니다.
 - forwardRef 굉장히 불편했는데 React 19에서 사라져서 다행입니다. 이건 왜 특별한 props 취급 받았을지 궁금하네요.
 
-### 15잗
+### 15장
 
-- 없습니다.
+- https://cekrem.github.io/posts/react-memo-when-it-helps-when-it-hurts/
+- 결론: 구조를 통해 리렌더링을 개선할 수 있는 방법도 있다!
