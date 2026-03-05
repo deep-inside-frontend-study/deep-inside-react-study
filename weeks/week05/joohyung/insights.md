@@ -6,6 +6,9 @@ React는 같은 React Element 객체가 유지되면 subtree 렌더링을 건너
 https://ted-projects.com/react19-internals-3
 
 ```
+
+const heavyComponent = <HeavyComponent />
+
 function Layout({ children }) {
   return <div>{children}</div>;
 }
@@ -17,7 +20,7 @@ export function Component() {
     <>
       <button onClick={() => setCount(c => c + 1)}>+</button>
       <Layout>
-        <HeavyComponent />
+        {heavyComponent}
       </Layout>
     </>
   );

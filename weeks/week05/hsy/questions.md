@@ -1,3 +1,4 @@
+# 왜 React hook 상태를 배열로 관리하지 않고 링크드리스트로 관리한걸까?
 # 왜 React는 Hook을 key 기반이 아니라 “호출 순서 기반”으로 설계했을까?
 - 관련 레퍼런스: https://overreacted.io/why-do-hooks-rely-on-call-order/#flaw-2-name-clashes
 - React는 Hook 상태를 key나 이름으로 매칭하지 않고, 호출 순서로 매칭함
