@@ -13,33 +13,6 @@ function iconUrl(fileName) {
   return new URL(appUrl(`/${fileName}`), self.location.origin).toString();
 }
 
-function buildNotificationPayload(data) {
-  if (!data) {
-    return {
-      title: "Inside React Study",
-      body: "새로운 업데이트가 도착했습니다.",
-      url: appUrl("/"),
-    };
-  }
-
-  try {
-    const text = data.text();
-    const parsed = JSON.parse(text);
-    return {
-      title: parsed.title || "Inside React Study",
-      body: parsed.body || "새로운 업데이트가 도착했습니다.",
-      url: parsed.url || appUrl("/"),
-      tag: parsed.tag || "study-update",
-    };
-  } catch {
-    return {
-      title: "Inside React Study",
-      body: data.text() || "새로운 업데이트가 도착했습니다.",
-      url: appUrl("/"),
-    };
-  }
-}
-
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
@@ -50,6 +23,7 @@ self.addEventListener("install", (event) => {
         appUrl("/apple-touch-icon.png"),
         appUrl("/pwa-192x192.png"),
         appUrl("/pwa-512x512.png"),
+        iconUrl("favicon.ico"),
       ];
 
       await Promise.allSettled(
@@ -133,75 +107,4 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(handleAssetRequest(event.request));
-});
-
-self.addEventListener("push", (event) => {
-  const payload = buildNotificationPayload(event.data);
-
-  event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
-      tag: payload.tag || "study-update",
-      icon: iconUrl("pwa-192x192.png"),
-      badge: iconUrl("pwa-badge.png"),
-      data: {
-        url: payload.url || appUrl("/"),
-      },
-    }),
-  );
-});
-
-self.addEventListener("message", (event) => {
-  if (event.data?.type !== "SHOW_NOTIFICATION") {
-    return;
-  }
-
-  const payload = event.data.payload || {};
-  event.waitUntil(
-    self.registration.showNotification(
-      payload.title || "Inside React Study",
-      {
-        body: payload.body || "새로운 업데이트가 도착했습니다.",
-        tag: payload.tag || "study-message",
-        icon: iconUrl("pwa-192x192.png"),
-        badge: iconUrl("pwa-badge.png"),
-        data: {
-          url: payload.url || appUrl("/"),
-        },
-      },
-    ),
-  );
-});
-
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-
-  event.waitUntil(
-    (async () => {
-      const targetUrl = new URL(
-        event.notification.data?.url || appUrl("/"),
-        self.location.origin,
-      ).href;
-      const windowClients = await clients.matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      });
-
-      for (const client of windowClients) {
-        if (client.url === targetUrl && "focus" in client) {
-          await client.focus();
-          return;
-        }
-      }
-
-      if (windowClients[0] && "navigate" in windowClients[0]) {
-        const client = windowClients[0];
-        await client.navigate(targetUrl);
-        await client.focus();
-        return;
-      }
-
-      await clients.openWindow(targetUrl);
-    })(),
-  );
 });
