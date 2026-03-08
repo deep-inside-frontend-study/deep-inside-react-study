@@ -6,6 +6,7 @@ import { MetricCard } from "@/components/ui/MetricCard";
 import { REPO_URL } from "@/constants/config";
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import { MemberGithubChip } from "@/components/member/MemberGithubChip";
+import { PwaQuickActions } from "@/components/pwa/PwaQuickActions";
 
 export default function HomePage() {
   const studyWeeks = getStudyWeeks();
@@ -69,6 +70,8 @@ export default function HomePage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 py-10 pb-16">
+        <PwaQuickActions />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
           {studyWeeks.map((week, i) => (
             <StudyWeekCard key={week.weekNum} week={week} index={i} />
