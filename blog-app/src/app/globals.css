@@ -114,6 +114,104 @@ body {
   animation: fabFloat 2.8s ease-in-out infinite;
 }
 
+.study-intro-disclosure {
+  background:
+    linear-gradient(180deg, rgba(15, 20, 40, 0.9), rgba(10, 14, 26, 0.94)),
+    rgba(15, 20, 40, 0.86);
+  border: 1px solid rgba(99, 120, 255, 0.15);
+  border-radius: 1.25rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(5, 10, 25, 0.22);
+}
+
+.study-intro-disclosure[open] {
+  border-color: rgba(99, 120, 255, 0.32);
+}
+
+.study-intro-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.35rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.study-intro-summary::-webkit-details-marker {
+  display: none;
+}
+
+.study-intro-summary:hover {
+  background: rgba(99, 120, 255, 0.05);
+}
+
+.study-intro-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(99, 120, 255, 0.12);
+  border: 1px solid rgba(99, 120, 255, 0.2);
+  color: #c7d2fe;
+}
+
+.study-intro-toggle-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.study-intro-toggle-label-open {
+  display: none;
+}
+
+.study-intro-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background: rgba(99, 120, 255, 0.18);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.study-intro-disclosure[open] .study-intro-toggle-label-closed {
+  display: none;
+}
+
+.study-intro-disclosure[open] .study-intro-toggle-label-open {
+  display: inline;
+}
+
+.study-intro-disclosure[open] .study-intro-toggle-icon {
+  transform: rotate(45deg);
+}
+
+.study-intro-body {
+  border-top: 1px solid rgba(99, 120, 255, 0.12);
+  padding: 1.35rem 1.35rem 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(99, 120, 255, 0.05), transparent 30%),
+    rgba(6, 11, 24, 0.4);
+}
+
+@media (min-width: 640px) {
+  .study-intro-summary {
+    padding: 1.45rem 1.6rem;
+  }
+
+  .study-intro-body {
+    padding: 1.6rem;
+  }
+}
+
 /* ── Glass Card ── */
 .glass-card {
   background: rgba(15, 20, 40, 0.8);
