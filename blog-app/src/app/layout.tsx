@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
-import { BASE_URL } from "@/constants/config";
+import { BASE_PATH, BASE_URL } from "@/constants/config";
+import { PwaBootstrap } from "@/components/pwa/PwaBootstrap";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -13,6 +14,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  applicationName: "Inside React Study",
+  manifest: `${BASE_PATH}/manifest.webmanifest`,
   title: {
     default: "Inside React Study — 다시 깊게 익히는 인사이드 리액트 북스터디",
     template: "%s | Inside React Study",
@@ -31,6 +34,33 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Inside React Study Group" }],
   creator: "Inside React Study Group",
+  appleWebApp: {
+    capable: true,
+    title: "Inside React Study",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    apple: [
+      {
+        url: `${BASE_PATH}/apple-touch-icon.png`,
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+    icon: [
+      { url: `${BASE_PATH}/favicon.ico` },
+      {
+        url: `${BASE_PATH}/pwa-192x192.png`,
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: `${BASE_PATH}/pwa-512x512.png`,
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "ko_KR",
@@ -68,6 +98,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0a0e1a",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -92,7 +129,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <PwaBootstrap />
+        {children}
+      </body>
     </html>
   );
 }
