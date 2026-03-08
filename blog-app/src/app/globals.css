@@ -78,6 +78,16 @@ body {
   }
 }
 
+@keyframes fabFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
 /* ── Utility classes ── */
 .fade-in-up {
   animation: var(--animate-fade-in-up);
@@ -88,6 +98,20 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.pwa-fab {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(167, 139, 250, 0.38),
+      transparent 42%
+    ),
+    linear-gradient(135deg, rgba(99, 120, 255, 0.95), rgba(56, 189, 248, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: fabFloat 2.8s ease-in-out infinite;
 }
 
 /* ── Glass Card ── */
