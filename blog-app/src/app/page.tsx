@@ -82,22 +82,20 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="mt-3">
-                <h2 className="text-xl sm:text-2xl font-bold">
-                  스터디 소개 펼쳐보기
-                </h2>
+                <h2 className="text-xl sm:text-2xl font-bold">스터디 소개</h2>
                 <p className="text-sm text-slate-400 mt-1 leading-relaxed">
-                  README 전체 내용을 접어두고, 필요할 때만 열어보는 형태로
-                  정리했습니다.
+                  스터디가 어떻게 진행되는지, 어떤 기준으로 정리하는지 가볍게
+                  확인할 수 있어요.
                 </p>
               </div>
             </div>
 
             <div className="study-intro-toggle">
               <span className="study-intro-toggle-label study-intro-toggle-label-closed">
-                열기
+                펼쳐보기
               </span>
               <span className="study-intro-toggle-label study-intro-toggle-label-open">
-                닫기
+                접기
               </span>
               <span className="study-intro-toggle-icon" aria-hidden="true">
                 +

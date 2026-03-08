@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { BASE_PATH } from "@/constants/config";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -35,24 +35,49 @@ function isIosDevice() {
   );
 }
 
+function subscribeStandaloneMode(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  const mediaQuery = window.matchMedia("(display-mode: standalone)");
+  const handleChange = () => {
+    onStoreChange();
+  };
+
+  mediaQuery.addEventListener?.("change", handleChange);
+  mediaQuery.addListener?.(handleChange);
+  window.addEventListener("appinstalled", handleChange);
+
+  return () => {
+    mediaQuery.removeEventListener?.("change", handleChange);
+    mediaQuery.removeListener?.(handleChange);
+    window.removeEventListener("appinstalled", handleChange);
+  };
+}
+
+function subscribeNoop() {
+  return () => {};
+}
+
 export function PwaQuickActions() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [isStandalone, setIsStandalone] = useState(() => isStandaloneMode());
-  const [isIos] = useState(() => isIosDevice());
   const [isFabExpanded, setIsFabExpanded] = useState(false);
   const [statusMessage, setStatusMessage] = useState(
     "홈 화면에 바로가기를 추가하면 이 아카이브를 앱처럼 바로 열 수 있습니다.",
   );
+  const isStandalone = useSyncExternalStore(
+    subscribeStandaloneMode,
+    isStandaloneMode,
+    () => false,
+  );
+  const isIos = useSyncExternalStore(subscribeNoop, isIosDevice, () => false);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
-
-    const updateStandaloneState = () => {
-      setIsStandalone(isStandaloneMode());
-    };
 
     const handleBeforeInstallPrompt = (event: Event) => {
       const promptEvent = event as BeforeInstallPromptEvent;
@@ -60,22 +85,13 @@ export function PwaQuickActions() {
       setDeferredPrompt(promptEvent);
     };
 
-    const mediaQuery = window.matchMedia("(display-mode: standalone)");
-    updateStandaloneState();
-
-    mediaQuery.addEventListener?.("change", updateStandaloneState);
-    mediaQuery.addListener?.(updateStandaloneState);
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", updateStandaloneState);
 
     return () => {
-      mediaQuery.removeEventListener?.("change", updateStandaloneState);
-      mediaQuery.removeListener?.(updateStandaloneState);
       window.removeEventListener(
         "beforeinstallprompt",
         handleBeforeInstallPrompt,
       );
-      window.removeEventListener("appinstalled", updateStandaloneState);
     };
   }, []);
 
