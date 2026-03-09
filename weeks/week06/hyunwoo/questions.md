@@ -1,0 +1,9 @@
+- 534 페이지에 리액트 19버전에서 사용되는 use() 로직 예제에 handlePromise()의 조건문 분기에 대한 궁금증이 있습니다. 535 페이지에 promise status를 보는 if else문이 있습니다. else문에서 처음보는 Promise라면 상태 추적 로직을 설정한다는데, 이 경우가 언제일까요?
+- 다들 Suspense, ErrorBoundary 많이 사용하시나요? 아무래도 React 18 이전 코드에선 적극적으로 사용하기 어려울 것 같아 질문 드립니다.
+- use() 많이 쓰시나요? useContext()를 대체할 수 있는 것으로 보이는데 실제로 많이 쓰시는지 궁금합니다.
+- react-error-boundary 사용하면 어떤 경우에도 런타임 에러를 막을 수 있는건지? 만약 그렇다면 런타임 에러 방지용으로도 자주 활용하시는지 궁금합니다.
+- react-helmet 혹은 React 19에서 기본적으로 지원하는 메타데이터 태그로 SEO에 도움이 되나요? 본질은 빈 index.html에서 js를 호출해서 화면을 그리는 것 때문에 React 만으로는 SEO가 안 될 것 같은데, 그렇다면 꼭 SEO가 아니라 사용성 측면에서 만든 기능이라고 이해해도 될지 궁금합니다. 
+  - Head management를 React에서 직접 하게 하려는 것이라고 하네요.
+- link rel="stylesheet" 사용시 "precedence" 프롭스에 대해 처음 알았습니다. 
+- useImperativeHandle는 언제 쓰일 수 있을까요? 부모에서 자식에 대한 구체적 액션을 작성해야 하는 경우가 있을까요?
+- useSyncExternalStore는 어떻게 티어링 문제를 해결했을까요?
