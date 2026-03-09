@@ -7,7 +7,7 @@ import {
   type WeekData,
   type StudyWeek,
 } from "@/types";
-import { CHAPTER_MAP } from "@/constants/study";
+import { CHAPTER_MAP, STUDY_WEEK_CHAPTERS } from "@/constants/study";
 
 const WEEKS_DIR = path.join(process.cwd(), "..", "weeks");
 
@@ -21,10 +21,9 @@ function readFileSafe(filePath: string): string {
 
 /**
  * weeks 폴더 구조를 그대로 따르되,
- * 1주차 = week01 폴더 = 1~3장
- * 2주차 = week02 폴더 = 4~6장
- * ...
- * 와 같이 매핑합니다. 내용이 있는 주차만 반환합니다.
+ * 주차별 챕터 수가 항상 동일하지 않으므로
+ * 명시적으로 정의한 매핑을 기준으로 챕터를 연결합니다.
+ * 내용이 있는 주차만 반환합니다.
  */
 export const getStudyWeeks = cache(function getStudyWeeksImpl(): StudyWeek[] {
   const weeksDir = WEEKS_DIR;
@@ -64,20 +63,17 @@ export const getStudyWeeks = cache(function getStudyWeeksImpl(): StudyWeek[] {
     // 작성된 내용이 없는(멤버가 0명인) 템플릿 주차는 표기하지 않음
     if (members.length === 0) continue;
 
-    const startChapter = (weekNum - 1) * 3 + 1;
-    const endChapter = Math.min(weekNum * 3, 19);
+    const chapterNums =
+      STUDY_WEEK_CHAPTERS[weekNum as keyof typeof STUDY_WEEK_CHAPTERS];
+    if (!chapterNums) continue;
 
-    if (startChapter > 19) continue;
-
-    const chapters: WeekData[] = [];
-    for (let c = startChapter; c <= endChapter; c++) {
-      chapters.push({
-        week: c,
-        slug: folder,
-        chapterTitle: CHAPTER_MAP[c as keyof typeof CHAPTER_MAP] ?? `${c}장`,
-        members, // 전체 멤버를 동일하게 넣어줌
-      });
-    }
+    const chapters: WeekData[] = chapterNums.map((chapterNum) => ({
+      week: chapterNum,
+      chapterTitle:
+        CHAPTER_MAP[chapterNum as keyof typeof CHAPTER_MAP] ??
+        `${chapterNum}장`,
+      members, // 전체 멤버를 동일하게 넣어줌
+    }));
 
     studyWeeks.push({
       weekNum,

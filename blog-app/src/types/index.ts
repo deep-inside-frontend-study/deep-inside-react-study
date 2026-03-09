@@ -11,7 +11,6 @@ export interface MemberPost {
 
 export interface WeekData {
   week: number;
-  slug: string;
   chapterTitle: string;
   members: MemberPost[];
 }

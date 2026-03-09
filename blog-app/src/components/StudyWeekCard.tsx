@@ -7,9 +7,8 @@ function deriveCardData(week: StudyWeek) {
   const members = [
     ...new Set(week.chapters.flatMap((w) => w.members.map((m) => m.member))),
   ];
-  const chapNums = week.chapters.map((w) => w.week);
-  const chapterRange = formatChapterRange(chapNums);
-  return { members, chapNums, chapterRange };
+  const chapterRange = formatChapterRange(week.chapters.map((w) => w.week));
+  return { members, chapterRange };
 }
 
 // --- Sub-components ---
