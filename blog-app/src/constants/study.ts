@@ -20,24 +20,12 @@ export const CHAPTER_MAP = {
   19: "Next.js 앱 라우터와 서버 액션, 그리고 새로운 리액트 훅 돌아보기",
 } as const;
 
-export const PART_MAP = {
-  1: "PART 1",
-  2: "PART 1",
-  3: "PART 1",
-  4: "PART 1",
-  5: "PART 1",
-  6: "PART 2",
-  7: "PART 2",
-  8: "PART 2",
-  9: "PART 2",
-  10: "PART 2",
-  11: "PART 2",
-  12: "PART 2",
-  13: "PART 3",
-  14: "PART 3",
-  15: "PART 3",
-  16: "PART 3",
-  17: "PART 3",
-  18: "PART 4",
-  19: "PART 4",
+export const STUDY_WEEK_CHAPTERS = {
+  1: [1, 2, 3],
+  2: [4, 5, 6],
+  3: [7, 8, 9],
+  4: [10, 11, 12],
+  5: [13, 14, 15],
+  6: [16, 17],
+  7: [18, 19],
 } as const;
